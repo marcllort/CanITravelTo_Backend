@@ -2,9 +2,13 @@ package Controller
 
 import (
 	database "CanITravelTo/Database"
+	"CanITravelTo/Model"
 	"CanITravelTo/Utils"
 	"database/sql"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
+	"net/http"
 )
 
 var db *sql.DB
@@ -15,8 +19,24 @@ func InitHandler() {
 
 func HandleRequest(c *gin.Context) {
 
-	destination := c.DefaultQuery("destination", "Spain")
-	origin := c.DefaultQuery("origin", "_")
+	body, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Saving the JSON in the corresponding fields
+	var m Model.APIRequest
+	err = json.Unmarshal(body, &m)
+	if err != nil {
+		panic(err)
+	}
+
+	destination := m.Destination
+	origin := m.Origin
+
+	var country Model.InfoCountry
+
 	code := 200
 	allowed := false
 	info := ""
@@ -24,6 +44,7 @@ func HandleRequest(c *gin.Context) {
 	if Utils.Has(destination) {
 		info = "Destination country exists "
 		// Check borders in the DB --> Return list of countries that can travel there
+		country = database.SelectCountry(db, destination, origin)
 	} else {
 		code = 400
 		allowed = false
@@ -44,6 +65,7 @@ func HandleRequest(c *gin.Context) {
 		"destination": destination,
 		"origin":      origin,
 		"allowed":     allowed,
+		"passport":    country.Info,
 		"info":        info,
 	})
 }
