@@ -12,6 +12,7 @@ func main() {
 
 	// Query string parameters are parsed using the existing underlying request object.
 	// The request responds to a url matching:  /travel?destination=Spain&origin=USA
+	Controller.InitHandler()
 	router.GET("/travel", Controller.HandleRequest)
 	router.Run(PORT)
 }

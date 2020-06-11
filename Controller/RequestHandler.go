@@ -1,9 +1,17 @@
 package Controller
 
 import (
+	database "CanITravelTo/Database"
 	"CanITravelTo/Utils"
+	"database/sql"
 	"github.com/gin-gonic/gin"
 )
+
+var db *sql.DB
+
+func InitHandler() {
+	db = database.CreateConnection()
+}
 
 func HandleRequest(c *gin.Context) {
 
