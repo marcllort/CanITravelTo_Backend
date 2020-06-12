@@ -28,3 +28,11 @@ To see the logs in a "tail" way:
 
 `sudo journalctl --follow _SYSTEMD_UNIT=canitravelto.service`
 
+Endpoint for backend is: http://35.180.85.2:8080/travel
+Test Body:
+{
+    "destination": "Spain",
+    "origin": "France"
+}
+
+Using Restful stress to stress test the endpoint
