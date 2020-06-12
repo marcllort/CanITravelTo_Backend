@@ -9,9 +9,9 @@ import (
 	"strings"
 )
 
-func CreateConnection() *sql.DB {
+func CreateConnection(creds string) *sql.DB {
 
-	dbURL := Utils.ReadCredentials()
+	dbURL := Utils.ReadCredentials(creds)
 
 	db, err := sql.Open("mysql", dbURL)
 	if err != nil {
@@ -26,6 +26,7 @@ func CreateConnection() *sql.DB {
 		}
 	}
 	fmt.Println("db is connected")
+
 	return db
 }
 

@@ -16,8 +16,8 @@ type Credentials struct {
 	database string
 }
 
-func ReadCredentials() string {
-	file, err := ioutil.ReadFile("creds.json")
+func ReadCredentials(credentials string) string {
+	file, err := ioutil.ReadFile(credentials)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed read file: %s\n", err)
 		os.Exit(1)

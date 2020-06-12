@@ -13,8 +13,9 @@ import (
 
 var db *sql.DB
 
-func InitHandler() {
-	db = database.CreateConnection()
+func InitHandler(creds string) {
+	db = database.CreateConnection(creds)
+
 }
 
 func HandleRequest(c *gin.Context) {
