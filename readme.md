@@ -152,7 +152,7 @@ Then just code! To deploy to Github pages:
 
 The only thing left to do is: go to the repository->Settings->Github Pages->Source and select: *gh-pages* branch.
 
-For this deployment I used [this](https://dev.to/yuribenjamin/how-to-deploy-react-app-in-github-pages-2a1f) tutorial.
+For this deployment I used [this](https://dev.to/yuribenjamin/how-to-deploy-react-app-in-github-pages-2a1f) and [this](https://medium.com/@shauxna/setting-up-a-custom-domain-for-your-react-app-on-github-pages-827b2606ca18) tutorial.
 
 ## TO-DO
   - [ ] Remove countries.go list and just sanitise input to prevent sqlInjection
@@ -162,4 +162,4 @@ For this deployment I used [this](https://dev.to/yuribenjamin/how-to-deploy-reac
   - [ ] Add cloudfare
   - [ ] Protect ip for backend
   - [ ] Alternative to AWS? 11 months remaining
-  - [ ] Change Domain from Amazon to github
+  - [x] Change Domain from Amazon to github
