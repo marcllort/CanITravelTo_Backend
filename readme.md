@@ -155,7 +155,11 @@ The only thing left to do is: go to the repository->Settings->Github Pages->Sour
 For this deployment I used [this](https://dev.to/yuribenjamin/how-to-deploy-react-app-in-github-pages-2a1f) tutorial.
 
 ## TO-DO
-  - Remove countries.go list and just sanitise input to prevent sqlInjection
-  - Add tests
-  - Add travis-ci pipeline and update link of travis-ci build in readme.md
-  - Move out from personal mail
+  - [ ] Remove countries.go list and just sanitise input to prevent sqlInjection
+  - [ ] Add tests
+  - [ ] Add travis-ci pipeline and update link of travis-ci build in readme.md
+  - [ ] Move out from personal mail
+  - [ ] Add cloudfare
+  - [ ] Protect ip for backend
+  - [ ] Alternative to AWS? 11 months remaining
+  - [ ] Change Domain from Amazon to github
