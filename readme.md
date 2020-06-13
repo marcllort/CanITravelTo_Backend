@@ -5,13 +5,17 @@
 ## Database
 
 [Amazon RDS MySQL](https://aws.amazon.com/es/rds/mysql/) free instance (t.2 micro instance) --> Basic/Simple setup (hosted in Paris). 
+
 Set its configuration to publicly available.
+
 In Security groups, add 2 inbound rules (port 3306 mysql), one for your development computer with your own IP, and another for the EC2 instances where the backend server is hosted. No need to set the IP, just the name of its security group/launch-wizard number 
 
 The current dataset in the DB has the information from [PassportIndex](passportindex.com) of the places you can travel with your passport. 
+
 This dataset, which should be regularly updated, can be found in [GitHub](https://github.com/ilyankou/passport-index-dataset) in CSV.Transform it to MySQL [here](https://www.convertcsv.com/csv-to-sql.htm).
 
 If updated, and the list of countries has changed, it must also be changed in Countries.go list
+
 Once the import script is prepared, just connect to the DB with DataGrip/Workbench and run the script.
 
 The DB credentials should be stored always in the Creds folder in the Backend project, with the following format:
@@ -30,7 +34,9 @@ The DB credentials should be stored always in the Creds folder in the Backend pr
 First I'll explain how to create the virtual-machine where the backend will run, and later in the *Backend GoLang* I will explain the backend itself.
 
 Hosted in free-tier t2.micro [Amazon EC2 instance](https://aws.amazon.com/es/ec2/), running Ubuntu 18.04 default configuration (hosted in Paris).
+
 When creating the instance, download the keypair.pem to be able to SSH into the machine.
+
 The only configuration needed, is in Security groups, where there's the need to, in the inbound rules, the ports 22 (SSH), 80 (HTTP), 8080 (DEV) and 443 (HTTPS) should be open to "Anywhere", so to `0.0.0.0`.
 
 ##### To ssh into AWS Ubuntu machine: 
@@ -89,6 +95,7 @@ To configure the ROUTE54 I used: https://www.youtube.com/watch?v=qor31Egu0Rg
 ## Backend GoLang
 
 Backend is written in Go, and using *Gin framework* for the http requests. The connection with the mySQL DB is done with *go-sql-driver*.
+
 When working on local, you should connect to *localhost:8080/travel*. If testing with the hosted backend in EC2, *publicIP:8080/travel*.
 
 ##### Libraries used:
@@ -104,6 +111,7 @@ The request to the backend should always be a *POST*, and this could be an examp
 ```
 
 So far, the response time in local is about 1ms, while in AWS is around 36ms. In both cases has been stress tested with thousands of requests every 1ms, and has been able to not drop a single request.
+
 To stress test the backend, I used the chrome extension named [RestfulStress](https://chrome.google.com/webstore/detail/restful-stress/lljgneahfmgjmpglpbhmkangancgdgeb).
 
 ## Frontend React
@@ -111,13 +119,17 @@ To stress test the backend, I used the chrome extension named [RestfulStress](ht
 The frontend is a static website coded in React and hosted in Github Pages, which is free with a maximum of a 100GB of bandwidth per month. To avoid this limitation, Cloudfare can be used. Cloudfare will (for free) cache the website in their servers and also provide a Secure SSL certificate. To do so, follow [this](https://www.toptal.com/github/unlimited-scale-web-hosting-github-pages-cloudflare) tutorial.
 
 To create and build the project, [*npm*](https://www.npmjs.com/) and [*node.js*](https://nodejs.org/en/) will be needed.
+
 Install *create-react-app*:
+
 `npm i create-react-app`
 
 And create the project:
+
 `npx create-react-app my-app`
 
 We need to install the Github-pages dependency, so we can deploy the web:
+
 `npm install gh-pages --save-dev`
 
 Go to the *package.json* file, and add: (or whatever domain name you want to use)
@@ -128,13 +140,14 @@ Go to the *package.json* file, and add: (or whatever domain name you want to use
 Also add in the begining of the scripts section:
 ```json
 "scripts": {
-    //...
+    ...
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
 }
 ```
 
 Then just code! To deploy to Github pages:
+
 `npm run deploy`
 
 The only thing left to do is: go to the repository->Settings->Github Pages->Source and select: *gh-pages* branch.
