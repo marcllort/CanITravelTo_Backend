@@ -176,6 +176,15 @@ To configure Cloudfare in both domains, there's a few steps to follow:
 #### Frontend
 In the case of Github Pages (canitravelto.com) just follow the Cloudfare set-up. Once the email is received about your website being active, navigate to SSL/TLS and change the mode to FULL. If not done, the webpage won't be reached (still don't know why)
 
+Another change to be done, is CORS in the API requests. CORS stands for Cross-origin resource sharing, which means that it will consume resources from another site. If not correctly configured, the requests will fail.
+
+To make this work, in the frontend we only need to add to the header of the request this two lines:
+
+ `myHeaders.append("Access-Control-Allow-Origin", "*");`
+    
+ `myHeaders.append("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers");`
+
+
 #### Backend
 With the backend (canitravelto.wtf), first I hosted in [AWS with Route53](https://www.youtube.com/watch?v=qor31Egu0Rg) (probably not needed) and then did the same configuration as with Github pages in Cloudfare.
 
@@ -185,6 +194,11 @@ In the GoLang backend (*main.go*):
 
 `router.RunTLS(PORT, "Creds/https-server.crt", "Creds/https-server.key")`
 
+We also need to enable CORS on the backend, to enable the requests from the frontend. Just add this two headers to the returned JSON:
+
+`c.Header("Access-Control-Allow-Origin", "*")`
+    
+`c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")`
 
 ## TO-DO
   - [ ] Remove countries.go list and just sanitise input to prevent sqlInjection
@@ -192,7 +206,7 @@ In the GoLang backend (*main.go*):
   - [ ] Add travis-ci pipeline and update link of travis-ci build in readme.md
   - [ ] Move out from personal mail
   - [x] Add cloudfare
-  - [ ] Protect ip for backend
+  - [ ] Protect ip for backend (cors, autotls?)
   - [ ] Alternative to AWS? 11 months remaining
   - [x] Change Domain from Amazon to github
 

@@ -24,4 +24,14 @@ func main() {
 
 	router.RunTLS(PORT, "Creds/https-server.crt", "Creds/https-server.key")
 
+	/*m := autocert.Manager{
+		Prompt:     autocert.AcceptTOS,
+		HostPolicy: autocert.HostWhitelist("canitravelto.com", "62.57.154.24", "localhost"),
+		Cache:      autocert.DirCache("/var/www/.cache"),
+	}
+
+	log.Fatal(autotls.RunWithManager(router, &m))*/
+
+	//router.Run(":8080")
+
 }
