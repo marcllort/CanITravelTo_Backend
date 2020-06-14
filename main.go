@@ -3,10 +3,11 @@ package main
 import (
 	"CanITravelTo/Controller"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"os"
 )
 
-const PORT = ":8080"
+const PORT = ":443"
 
 func main() {
 
@@ -17,5 +18,10 @@ func main() {
 	// The request responds to a url matching:  /travel?destination=Spain&origin=USA
 	Controller.InitHandler(creds)
 	router.POST("/travel", Controller.HandleRequest)
-	router.Run(PORT)
+	router.GET("/test", func(c *gin.Context) {
+		c.String(http.StatusOK, "Hello visitor")
+	})
+
+	router.RunTLS(PORT, "Creds/https-server.crt", "Creds/https-server.key")
+
 }
