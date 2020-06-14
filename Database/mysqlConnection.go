@@ -11,7 +11,7 @@ import (
 
 func CreateConnection(creds string) *sql.DB {
 
-	dbURL := Utils.ReadCredentials(creds)
+	dbURL := Utils.ReadCredentials(creds + "/creds.json")
 
 	db, err := sql.Open("mysql", dbURL)
 	if err != nil {

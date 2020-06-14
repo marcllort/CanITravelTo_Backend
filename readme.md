@@ -59,7 +59,7 @@ go build -o canITravelToUpdated
 `scp -i keypair.pem fileToUpload ubuntu@[Public-DNS]: (i.e= whatever.eu-west-3.compute.amazonaws.com:)`
 
 ##### Create service in Ubuntu
-To make the backend always available, we need to create a system.d service.
+To make the backend always available, we need to create a system.d service. In the path `cd /etc/systemd/system/`
 The file, should follow this pattern:
 
     [Unit]

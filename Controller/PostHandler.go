@@ -18,7 +18,7 @@ func InitHandler(creds string) {
 
 }
 
-func HandleRequest(c *gin.Context) {
+func PostHandler(c *gin.Context) {
 
 	body, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
