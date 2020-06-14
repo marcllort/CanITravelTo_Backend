@@ -200,6 +200,18 @@ We also need to enable CORS on the backend, to enable the requests from the fron
     
 `c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")`
 
+
+## Expiring Dates
+   
+   All logins with personal email
+   
+   - canitravelto.com godaddy.com (May 2021) 
+   - AWS RDS MySQL BBDD (June 2021) 
+   - AWS EC2 Ubuntu t2.micro Instance (June 2021) 
+   - canitravelto.wtf - name.com (June 2021) 
+   - Cloudfare check just in case (June 2021) 
+   - Cloudfare SSL for .com and .wtf (June 2035)
+
 ## TO-DO
   - [ ] Create Postman test scenarios  
   - [ ] Add travis-ci or gitlab pipeline and update link of travis-ci build in readme.md
