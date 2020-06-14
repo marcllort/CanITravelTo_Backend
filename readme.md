@@ -89,8 +89,6 @@ To see the backend logs in a "tail" way:
 ```sh
 sudo journalctl --follow _SYSTEMD_UNIT=canitravelto.service
 ```
-#### Custom Domain name
-To configure the ROUTE54 I used: https://www.youtube.com/watch?v=qor31Egu0Rg
 
 ## Backend GoLang
 
@@ -109,6 +107,8 @@ The request to the backend should always be a *POST*, and this could be an examp
         "origin": "France"
     }
 ```
+
+When running the *Gin router* previously I used `run`, which serves HTTP. But since being deployed I use `runTLS`, which servers HTTPS. In this case you need to provide two certificates, later explained in Domains and Cloudfare.
 
 So far, the response time in local is about 1ms, while in AWS is around 36ms. In both cases has been stress tested with thousands of requests every 1ms, and has been able to not drop a single request.
 
@@ -156,12 +156,43 @@ Then, set the domain to: *canitravelto.com* (This step of setting the domain for
 
 For this deployment I used [this](https://dev.to/yuribenjamin/how-to-deploy-react-app-in-github-pages-2a1f) and [this](https://medium.com/@shauxna/setting-up-a-custom-domain-for-your-react-app-on-github-pages-827b2606ca18) tutorial.
 
+## Domains and Cloudfare
+
+Currently two domains are being used, canitravelto.com (where the frontend is hosted, Github Pages) and canitravelto.wtf (where the backend API is hosted, EC2 AWS).
+
+Both are using Cloudfare, which provides caching for the website, important for the frontend as Github offers a maximum of 100GB of bandwidth per month, but most importantly it provides TLS certificates, so the website and backend are HTTPS encrypted and safe to use.
+
+At first, only the frontend used Cloudfare as there was no need for the backend to use HTTPS, until I saw that an HTTPS website can't consume from a HTTP API. The options where to go back to HTTP in the frontend (I didn't manage to do it, because Github Pages always provides a HTTPS).
+
+The second option was to serve the API as HTTPS. I created my own certificates, but as they were self-signed, HTTPS didn't like them, so I had to have valid certificates. To get a SSL certificate, you need a domain name, so I then acquired canitravelto.wtf, to use it instead of the public AWS IP.
+
+[canitravelto.com](canitravelto.com) is hosted by godaddy.com
+
+[canitravelto.wtf](canitravelto.wtf) is hosted by name.com
+
+### Cloudfare
+To configure Cloudfare in both domains, there's a few steps to follow:
+
+#### Frontend
+In the case of Github Pages (canitravelto.com) just follow the Cloudfare set-up. Once the email is received about your website being active, navigate to SSL/TLS and change the mode to FULL. If not done, the webpage won't be reached (still don't know why)
+
+#### Backend
+With the backend (canitravelto.wtf), first I hosted in [AWS with Route53](https://www.youtube.com/watch?v=qor31Egu0Rg) (probably not needed) and then did the same configuration as with Github pages in Cloudfare.
+
+In this case we also have to navigate to SSL/TLS -> Origin Server and select Create Server. We need to copy the two keys and save them in "http-server.key" and "http-server.cert". 
+
+In the GoLang backend (*main.go*):
+
+`router.RunTLS(PORT, "Creds/https-server.crt", "Creds/https-server.key")`
+
+
 ## TO-DO
   - [ ] Remove countries.go list and just sanitise input to prevent sqlInjection
   - [ ] Add tests
   - [ ] Add travis-ci pipeline and update link of travis-ci build in readme.md
   - [ ] Move out from personal mail
-  - [ ] Add cloudfare
+  - [x] Add cloudfare
   - [ ] Protect ip for backend
   - [ ] Alternative to AWS? 11 months remaining
   - [x] Change Domain from Amazon to github
+
