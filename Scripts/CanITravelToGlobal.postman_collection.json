@@ -1,0 +1,116 @@
+{
+	"info": {
+		"_postman_id": "bdbee6b3-6d47-45fe-a601-49d94a0265de",
+		"name": "CanITravelToGlobal",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Basic Travel WTF Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"destination\": \"Spain\",\r\n    \"origin\": \"France\"\r\n}"
+				},
+				"url": {
+					"raw": "https://canitravelto.wtf/travel",
+					"protocol": "https",
+					"host": [
+						"canitravelto",
+						"wtf"
+					],
+					"path": [
+						"travel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Test WTF Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://canitravelto.wtf/test",
+					"protocol": "https",
+					"host": [
+						"canitravelto",
+						"wtf"
+					],
+					"path": [
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Travel WTF Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://canitravelto.wtf/travel",
+					"protocol": "https",
+					"host": [
+						"canitravelto",
+						"wtf"
+					],
+					"path": [
+						"travel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Basic Com Request",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"destination\": \"Spain\",\r\n    \"origin\": \"France\"\r\n}"
+				},
+				"url": {
+					"raw": "https://canitravelto.com/",
+					"protocol": "https",
+					"host": [
+						"canitravelto",
+						"com"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Options Travel WTF Request",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "https://canitravelto.wtf/travel",
+					"protocol": "https",
+					"host": [
+						"canitravelto",
+						"wtf"
+					],
+					"path": [
+						"travel"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

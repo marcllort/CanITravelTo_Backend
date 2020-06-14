@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "6b21d045-5b1d-4d22-a28b-4cc7a539b3d5",
+		"name": "CanITravelToLocal",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Basic Local Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"destination\": \"Spain\",\r\n    \"origin\": \"France\"\r\n}"
+				},
+				"url": {
+					"raw": "https://localhost/travel",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"travel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Travel Local Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost/travel",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"travel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Test Local Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost/test",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Basic Com Local Request",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"destination\": \"Spain\",\r\n    \"origin\": \"France\"\r\n}"
+				},
+				"url": {
+					"raw": "https://localhost:3000",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "3000"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Options Travel Local Request",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "https://localhost/travel",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"travel"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
