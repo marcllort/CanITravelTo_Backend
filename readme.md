@@ -201,12 +201,17 @@ We also need to enable CORS on the backend, to enable the requests from the fron
 `c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")`
 
 ## TO-DO
+  - [ ] Create Postman test scenarios  
+  - [ ] Add travis-ci or gitlab pipeline and update link of travis-ci build in readme.md
+  - [ ] Improve deployment to github pages and ubuntu improve script
   - [ ] Remove countries.go list and just sanitise input to prevent sqlInjection
-  - [ ] Add tests
-  - [ ] Add travis-ci pipeline and update link of travis-ci build in readme.md
-  - [ ] Move out from personal mail
-  - [x] Add cloudfare
+  - [ ] Add tests to golang and react
+  - [ ] Develop good frontend
   - [ ] Protect ip for backend (cors, autotls?)
+  - [ ] Google SEO
+  - [ ] Move out from personal mail
   - [ ] Alternative to AWS? 11 months remaining
+  - [x] Add cloudfare
   - [x] Change Domain from Amazon to github
+  
 
