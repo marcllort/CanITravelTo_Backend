@@ -213,16 +213,27 @@ We also need to enable CORS on the backend, to enable the requests from the fron
    - Cloudfare SSL for .com and .wtf (June 2035)
 
 ## TO-DO
+  
+  - [ ] Add Covid info to response, and modify responses to be already displayed in frontend
+  - [ ] Card view for backend response to frontend (show covid cases, visa status...)
   - [ ] Create Postman test scenarios  
+  - [ ] Commentate code 
+  - [ ] Retrieve accesses to the website (IP, origin, destination...) or find solution to log visits/web usage (gin may already have one)
+  - [ ] Suggestions in Frontend (i.e You can also go there with your passport!) 
+  - [ ] Unify country names between frontend, passportInfo and CovidInfo (maybe new row in Covid info with name of PassportInfo?)
   - [ ] Add travis-ci or gitlab pipeline and update link of travis-ci build in readme.md
   - [ ] Improve deployment to github pages and ubuntu improve script
   - [ ] Remove countries.go list and just sanitise input to prevent sqlInjection
   - [ ] Add tests to golang and react
   - [ ] Develop good frontend
   - [ ] Protect ip for backend (cors, autotls?)
+  - [ ] Make Frontend use GET endpoint
+  - [ ] Archive old frontend repository
+  - [ ] Save user emails from frontend form
+  - [ ] Write frontend README and update REACT part of this one (now use html,css)
   - [ ] Google SEO
   - [ ] Move out from personal mail
-  - [ ] Alternative to AWS? 11 months remaining
+  - [ ] Alternative to AWS? 11 months remaining (June 2021)
   - [x] Add cloudfare
   - [x] Change Domain from Amazon to github
   

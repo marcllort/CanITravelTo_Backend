@@ -3,6 +3,7 @@ package main
 import (
 	"CanITravelTo/Controller"
 	"github.com/gin-gonic/gin"
+	"github.com/jasonlvhit/gocron"
 	"os"
 )
 
@@ -13,9 +14,15 @@ func main() {
 	creds := os.Args[1]
 	router := gin.Default()
 
+	Controller.InitDatabase(creds)
+	Controller.CovidRetrieval()
+
+	gocron.Every(1).Day().At("10:30:01").Do(Controller.CovidRetrieval)
+	<-gocron.Start()
+
 	// Query string parameters are parsed using the existing underlying request object.
 	// The request responds to a url matching:  /travel?destination=Spain&origin=USA
-	Controller.InitHandler(creds)
+
 	router.OPTIONS("/travel", Controller.OptionsHandler)
 	router.POST("/travel", Controller.PostHandler)
 	router.GET("/travel", Controller.GetHandler)

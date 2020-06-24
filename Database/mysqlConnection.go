@@ -59,3 +59,92 @@ func SelectCountry(db *sql.DB, destination string, origin string) Model.InfoCoun
 
 	return country
 }
+
+func SelectCountryCovid(db *sql.DB, country string) Model.CountryCovid {
+	var query strings.Builder
+	query.WriteString("SELECT Country, CountryCode, Slug, NewConfirmed, TotalConfirmed, NewDeaths, TotalDeaths, NewRecovered, TotalRecovered")
+	query.WriteString(" FROM CovidInfo WHERE Country LIKE '")
+	query.WriteString(country)
+	query.WriteString("'")
+
+	finalQuery := query.String()
+	var covidInfo Model.CountryCovid
+
+	db.QueryRow(finalQuery).Scan(&covidInfo.Country, &covidInfo.CountryCode, &covidInfo.Slug, &covidInfo.NewConfirmed, &covidInfo.TotalConfirmed,
+		&covidInfo.NewDeaths, &covidInfo.TotalDeaths, &covidInfo.NewRecovered, &covidInfo.TotalRecovered)
+
+	return covidInfo
+}
+
+func InsertCovidCountry(db *sql.DB, covid Model.Covid) {
+	var query strings.Builder
+
+	for _, element := range covid.Countries {
+		query.WriteString("INSERT INTO CovidInfo(Country, CountryCode, Slug, NewConfirmed, TotalConfirmed, NewDeaths, TotalDeaths, NewRecovered, TotalRecovered) VALUES (\"")
+		query.WriteString(element.Country)
+		query.WriteString("\" ,'")
+		query.WriteString(element.CountryCode)
+		query.WriteString("' ,'")
+		query.WriteString(element.Slug)
+		query.WriteString("' ,")
+		query.WriteString(fmt.Sprintf("%d", element.NewConfirmed))
+		query.WriteString(" ,")
+		query.WriteString(fmt.Sprintf("%d", element.TotalConfirmed))
+		query.WriteString(" ,")
+		query.WriteString(fmt.Sprintf("%d", element.NewDeaths))
+		query.WriteString(" ,")
+		query.WriteString(fmt.Sprintf("%d", element.TotalDeaths))
+		query.WriteString(" ,")
+		query.WriteString(fmt.Sprintf("%d", element.NewRecovered))
+		query.WriteString(" ,")
+		query.WriteString(fmt.Sprintf("%d", element.TotalRecovered))
+
+		query.WriteString(" )")
+
+		finalQuery := query.String()
+
+		insert, err := db.Query(finalQuery)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		insert.Close()
+		query.Reset()
+
+	}
+
+}
+
+func UpdateCovidCountry(db *sql.DB, covid Model.Covid) {
+	var query strings.Builder
+
+	for _, element := range covid.Countries {
+		query.WriteString("UPDATE CovidInfo SET ")
+		query.WriteString(fmt.Sprintf("NewConfirmed=%d", element.NewConfirmed))
+		query.WriteString(" ,")
+		query.WriteString(fmt.Sprintf("TotalConfirmed=%d", element.TotalConfirmed))
+		query.WriteString(" ,")
+		query.WriteString(fmt.Sprintf("NewDeaths=%d", element.NewDeaths))
+		query.WriteString(" ,")
+		query.WriteString(fmt.Sprintf("TotalDeaths=%d", element.TotalDeaths))
+		query.WriteString(" ,")
+		query.WriteString(fmt.Sprintf("NewRecovered=%d", element.NewRecovered))
+		query.WriteString(" ,")
+		query.WriteString(fmt.Sprintf("TotalRecovered=%d", element.TotalRecovered))
+		query.WriteString(" WHERE Country=\"")
+		query.WriteString(element.Country)
+		query.WriteString("\"")
+
+		finalQuery := query.String()
+
+		insert, err := db.Query(finalQuery)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		insert.Close()
+		query.Reset()
+
+	}
+
+}
