@@ -15,10 +15,7 @@ func main() {
 	router := gin.Default()
 
 	Controller.InitDatabase(creds)
-	Controller.CovidRetrieval()
-
-	gocron.Every(1).Day().At("10:30:01").Do(Controller.CovidRetrieval)
-	<-gocron.Start()
+	//Controller.CovidRetrieval()
 
 	// Query string parameters are parsed using the existing underlying request object.
 	// The request responds to a url matching:  /travel?destination=Spain&origin=USA
@@ -29,5 +26,8 @@ func main() {
 	router.GET("/test", Controller.GetHandlerTest)
 
 	router.RunTLS(PORT, creds+"/https-server.crt", creds+"/https-server.key")
+
+	gocron.Every(1).Day().At("10:30:01").Do(Controller.CovidRetrieval)
+	<-gocron.Start()
 
 }

@@ -30,7 +30,7 @@ func CreateConnection(creds string) *sql.DB {
 	return db
 }
 
-func SelectCountry(db *sql.DB, destination string, origin string) Model.InfoCountry {
+func SelectCountryOriginDest(db *sql.DB, destination string, origin string) Model.InfoCountry {
 	var query strings.Builder
 	query.WriteString("SELECT ")
 	query.WriteString(destination)
@@ -60,6 +60,25 @@ func SelectCountry(db *sql.DB, destination string, origin string) Model.InfoCoun
 	return country
 }
 
+func ExistsCountry(db *sql.DB, countrySelect string) bool {
+	var query strings.Builder
+	query.WriteString("SELECT EXISTS(SELECT * FROM PassportInfo WHERE Passport LIKE '")
+	query.WriteString(countrySelect)
+	query.WriteString("')")
+
+	finalQuery := query.String()
+
+	var exists bool
+	row := db.QueryRow(finalQuery)
+	err := row.Scan(&exists)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return exists
+}
+
 func SelectCountryCovid(db *sql.DB, country string) Model.CountryCovid {
 	var query strings.Builder
 	query.WriteString("SELECT Country, CountryCode, Slug, NewConfirmed, TotalConfirmed, NewDeaths, TotalDeaths, NewRecovered, TotalRecovered")
@@ -74,6 +93,25 @@ func SelectCountryCovid(db *sql.DB, country string) Model.CountryCovid {
 		&covidInfo.NewDeaths, &covidInfo.TotalDeaths, &covidInfo.NewRecovered, &covidInfo.TotalRecovered)
 
 	return covidInfo
+}
+
+func ExistsCountryCovid(db *sql.DB, countrySelect string) bool {
+	var query strings.Builder
+	query.WriteString("SELECT EXISTS(SELECT * FROM CovidInfo WHERE Country LIKE '")
+	query.WriteString(countrySelect)
+	query.WriteString("'")
+
+	finalQuery := query.String()
+
+	var exists bool
+	row := db.QueryRow(finalQuery)
+	err := row.Scan(&exists)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return exists
 }
 
 func InsertCovidCountry(db *sql.DB, covid Model.Covid) {

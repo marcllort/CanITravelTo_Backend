@@ -19,8 +19,9 @@ func CovidRetrieval() {
 
 		var responseObject Model.Covid
 		json.Unmarshal(data, &responseObject)
-
+		fmt.Println("Retrieving data...")
 		database.UpdateCovidCountry(db, responseObject)
+		fmt.Println("Covid Data updated!")
 	}
 
 }
