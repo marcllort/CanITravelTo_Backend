@@ -4,6 +4,7 @@ import (
 	"CanITravelTo/Controller"
 	"github.com/gin-gonic/gin"
 	"github.com/jasonlvhit/gocron"
+	"io"
 	"os"
 )
 
@@ -12,6 +13,8 @@ const PORT = ":443"
 func main() {
 
 	creds := os.Args[1]
+	myfile, _ := os.Create("server.log")
+	gin.DefaultWriter = io.MultiWriter(myfile, os.Stdout)
 	router := gin.Default()
 
 	Controller.InitDatabase(creds)
