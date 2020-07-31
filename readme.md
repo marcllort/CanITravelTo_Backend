@@ -201,6 +201,9 @@ We also need to enable CORS on the backend, to enable the requests from the fron
 `c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")`
 
 
+go mod init
+go mod tidy
+
 ## Expiring Dates
    
    All logins with personal email

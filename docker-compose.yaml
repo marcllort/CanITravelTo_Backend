@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  business-handler:
+    container_name: business-handler
+    build:
+      context: ./BusinessHandler
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "443:443"
+    volumes:
+      - .:/app
+    networks:
+      backend-network:
+        ipv4_address: 10.5.0.5
+
+  data-retriever:
+    container_name: data-retriever
+    build:
+      context: ./DataRetriever
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    volumes:
+      - .:/app
+
+networks:
+  backend-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
