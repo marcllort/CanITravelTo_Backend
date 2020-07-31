@@ -30,4 +30,4 @@ RUN cp /build/main .
 # EXPOSE 443
 
 # Command to run when starting the container
-CMD ["/dist/main", "/build/Creds/"]
+CMD ["/dist/main", "/build/Creds"]

@@ -203,6 +203,7 @@ We also need to enable CORS on the backend, to enable the requests from the fron
 
 go mod init
 go mod tidy
+Performance comparison, in local and in web
 
 ## Expiring Dates
    
