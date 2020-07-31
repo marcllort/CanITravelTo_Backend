@@ -1,8 +1,8 @@
 package database
 
 import (
-	"CanITravelTo/BusinessHandler/Model"
-	"CanITravelTo/BusinessHandler/Utils"
+	"CanITravelTo/DataRetriever/Model"
+	"CanITravelTo/DataRetriever/Utils"
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"

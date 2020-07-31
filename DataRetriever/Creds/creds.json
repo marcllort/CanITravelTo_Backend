@@ -1,0 +1,7 @@
+{
+  "user": "admin",
+  "password": "marcpassword",
+  "hostname": "travelto.c7buazzcmua5.eu-west-3.rds.amazonaws.com",
+  "port": "3306",
+  "database": "travelto"
+}

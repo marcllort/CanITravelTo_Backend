@@ -3,7 +3,6 @@ package main
 import (
 	"CanITravelTo/BusinessHandler/Controller"
 	"github.com/gin-gonic/gin"
-	"github.com/jasonlvhit/gocron"
 	"io"
 	"os"
 )
@@ -30,8 +29,5 @@ func main() {
 	router.GET("/test", Controller.GetHandlerTest)
 
 	router.RunTLS(PORT, creds+"/https-server.crt", creds+"/https-server.key")
-
-	gocron.Every(1).Day().At("10:30:01").Do(Controller.CovidRetrieval)
-	<-gocron.Start()
 
 }
