@@ -1,7 +1,7 @@
 package main
 
 import (
-	"CanITravelTo/Controller"
+	"CanITravelTo/BusinessHandler/Controller"
 	"github.com/gin-gonic/gin"
 	"github.com/jasonlvhit/gocron"
 	"io"
@@ -13,12 +13,13 @@ const PORT = ":443"
 func main() {
 
 	creds := os.Args[1]
-	myfile, _ := os.Create("server.log")
+	myfile := os.NewFile(0, "server.log")
+
 	gin.DefaultWriter = io.MultiWriter(myfile, os.Stdout)
 	router := gin.Default()
 
 	Controller.InitDatabase(creds)
-	//Controller.CovidRetrieval()
+	Controller.CovidRetrieval()
 
 	// Query string parameters are parsed using the existing underlying request object.
 	// The request responds to a url matching:  /travel?destination=Spain&origin=USA

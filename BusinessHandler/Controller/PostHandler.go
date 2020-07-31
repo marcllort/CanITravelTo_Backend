@@ -1,8 +1,8 @@
 package Controller
 
 import (
-	database "CanITravelTo/Database"
-	"CanITravelTo/Model"
+	database "CanITravelTo/BusinessHandler/Database"
+	"CanITravelTo/BusinessHandler/Model"
 	"database/sql"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
