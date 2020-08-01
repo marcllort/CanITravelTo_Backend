@@ -42,53 +42,8 @@ The only configuration needed, is in Security groups, where there's the need to,
 ##### To ssh into AWS Ubuntu machine: 
 `ssh -i keypair.pem ubuntu@[Public-DNS] (i.e= whatever.eu-west-3.compute.amazonaws.com)`
 
-##### Compile to AWS [Deprecated, now using Docker]:
-If not already done (to check do: `go env`), do a:
-```sh
-set GOOS=linux
-set GOARCH=amd64 
-```
-And to compile the new version:
-
-```sh
-go build -o canITravelToUpdated
-```
-
-
-##### To upload the new build:
-`scp -i keypair.pem fileToUpload ubuntu@[Public-DNS]: (i.e= whatever.eu-west-3.compute.amazonaws.com:)`
-
-##### Create service in Ubuntu
-To make the backend always available, we need to create a system.d service. In the path `cd /etc/systemd/system/`
-The file, should follow this pattern:
-
-    [Unit]
-    Description=CanITravelTo Backend
-    
-    [Service]
-    ExecStart=/home/<username>/<exepath> [params]
-    User=root
-    Group=root
-    Restart=always
-    
-    [Install]
-    WantedBy=multi-user.target
-
-To start the service:
-```sh
-sudo systemctl enable <filename>.service
-sudo systemctl start <filename>.service
-sudo systemctl status <filename>.service
-```
-To stop the service:
-```sh
-sudo systemctl stop <filename>.service
-```
-
-To see the backend logs in a "tail" way:
-```sh
-sudo journalctl --follow _SYSTEMD_UNIT=canitravelto.service
-```
+##### New deployments:
+So far, I have a simple bash script responsible of checking if there have been new "pushes" in git, and if there's been, it updates automatically the version deployed to the one in Github. This process is a service (cronjob) that runs daily, but for now I have it disabled and I run it manually once I do changes.
 
 ## Backend GoLang
 
@@ -133,50 +88,14 @@ There are two different Dockerfile's for each microservice, plus the docker-comp
 
 Performance wise, the difference between the compiled binary and the docker images has been negligible. Both are extremly fast, averaging around 53ms per request both.
 
-## Docker
+## Git
 I'm using a mono-repo, as its enables me to share the docker-compose, readme, credentials... Later on, during the CI/CD is much easier to deal, as there is only one git repository to pull and deal with.
 
-## Frontend React [Deprecated, now using vanilla HTML/CSS]
+## Frontend
 
-The frontend is a static website coded in React and hosted in Github Pages, which is free with a maximum of a 100GB of bandwidth per month. To avoid this limitation, Cloudfare can be used. Cloudfare will (for free) cache the website in their servers and also provide a Secure SSL certificate. To do so, follow [this](https://www.toptal.com/github/unlimited-scale-web-hosting-github-pages-cloudflare) tutorial.
+The frontend is a static website coded in vanilla HTML/CSS/JS and hosted in Github Pages, which is free with a maximum of a 100GB of bandwidth per month. To avoid this limitation, Cloudfare can be used. Cloudfare will (for free) cache the website in their servers and also provide a Secure SSL certificate. To do so, follow [this](https://www.toptal.com/github/unlimited-scale-web-hosting-github-pages-cloudflare) tutorial.
 
-To create and build the project, [*npm*](https://www.npmjs.com/) and [*node.js*](https://nodejs.org/en/) will be needed.
-
-Install *create-react-app*:
-
-`npm i create-react-app`
-
-And create the project:
-
-`npx create-react-app my-app`
-
-We need to install the Github-pages dependency, so we can deploy the web:
-
-`npm install gh-pages --save-dev`
-
-Go to the *package.json* file, and add: (or whatever domain name you want to use)
-```json
-"homepage": "https://{username}.github.io/{repo-name}"
-```
-
-Also add in the begining of the scripts section:
-```json
-"scripts": {
-    ...
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
-}
-```
-
-Then just code! To deploy to Github pages:
-
-`npm run deploy`
-
-The only thing left to do is: go to the repository->Settings->Github Pages->Source and select: *gh-pages* branch.
-
-Then, set the domain to: *canitravelto.com* (This step of setting the domain for now must be done every time there is a new deployment, because the CNAME file is deleted with the deployment)
-
-For this deployment I used [this](https://dev.to/yuribenjamin/how-to-deploy-react-app-in-github-pages-2a1f) and [this](https://medium.com/@shauxna/setting-up-a-custom-domain-for-your-react-app-on-github-pages-827b2606ca18) tutorial.
+In the future, I plan to move to a React frontend. Already have a React implementation running, but so far is not as nice as the vanilla one, because I don't have much experience with it! Once I'm done with CI/CD and backend tests, I'll continue with the React trainings to improve it.
 
 ## Domains and Cloudfare
 
@@ -223,6 +142,97 @@ We also need to enable CORS on the backend, to enable the requests from the fron
 `c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")`
 
 
+## Deprecated developments:
+
+### Compile to AWS [Deprecated, now using Docker]:
+If not already done (to check do: `go env`), do a:
+```sh
+set GOOS=linux
+set GOARCH=amd64 
+```
+And to compile the new version:
+
+```sh
+go build -o canITravelToUpdated
+```
+
+##### To upload the new build:
+`scp -i keypair.pem fileToUpload ubuntu@[Public-DNS]: (i.e= whatever.eu-west-3.compute.amazonaws.com:)`
+
+##### Create service in Ubuntu
+To make the backend always available, we need to create a system.d service. In the path `cd /etc/systemd/system/`
+The file, should follow this pattern:
+
+    [Unit]
+    Description=CanITravelTo Backend
+    
+    [Service]
+    ExecStart=/home/<username>/<exepath> [params]
+    User=root
+    Group=root
+    Restart=always
+    
+    [Install]
+    WantedBy=multi-user.target
+
+To start the service:
+```sh
+sudo systemctl enable <filename>.service
+sudo systemctl start <filename>.service
+sudo systemctl status <filename>.service
+```
+To stop the service:
+```sh
+sudo systemctl stop <filename>.service
+```
+
+To see the backend logs in a "tail" way:
+```sh
+sudo journalctl --follow _SYSTEMD_UNIT=canitravelto.service
+```
+
+### Frontend React [Deprecated, now using vanilla HTML/CSS]
+
+The frontend is a static website coded in React and hosted in Github Pages, which is free with a maximum of a 100GB of bandwidth per month. To avoid this limitation, Cloudfare can be used. Cloudfare will (for free) cache the website in their servers and also provide a Secure SSL certificate. To do so, follow [this](https://www.toptal.com/github/unlimited-scale-web-hosting-github-pages-cloudflare) tutorial.
+
+To create and build the project, [*npm*](https://www.npmjs.com/) and [*node.js*](https://nodejs.org/en/) will be needed.
+
+Install *create-react-app*:
+
+`npm i create-react-app`
+
+And create the project:
+
+`npx create-react-app my-app`
+
+We need to install the Github-pages dependency, so we can deploy the web:
+
+`npm install gh-pages --save-dev`
+
+Go to the *package.json* file, and add: (or whatever domain name you want to use)
+```json
+"homepage": "https://{username}.github.io/{repo-name}"
+```
+
+Also add in the begining of the scripts section:
+```json
+"scripts": {
+    ...
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+}
+```
+
+Then just code! To deploy to Github pages:
+
+`npm run deploy`
+
+The only thing left to do is: go to the repository->Settings->Github Pages->Source and select: *gh-pages* branch.
+
+Then, set the domain to: *canitravelto.com* (This step of setting the domain for now must be done every time there is a new deployment, because the CNAME file is deleted with the deployment)
+
+For this deployment I used [this](https://dev.to/yuribenjamin/how-to-deploy-react-app-in-github-pages-2a1f) and [this](https://medium.com/@shauxna/setting-up-a-custom-domain-for-your-react-app-on-github-pages-827b2606ca18) tutorial.
+
 ## Expiring Dates
    
    All logins with personal email
@@ -237,6 +247,7 @@ We also need to enable CORS on the backend, to enable the requests from the fron
 ## TO-DO
   
   - [ ] Add Covid info to response, and modify responses to be already displayed in frontend
+  - [ ] Kubernetes support
   - [ ] Card view for backend response to frontend (show covid cases, visa status...)
   - [ ] Create Postman test scenarios  
   - [ ] Commentate code 
@@ -258,5 +269,3 @@ We also need to enable CORS on the backend, to enable the requests from the fron
   - [ ] Alternative to AWS? 11 months remaining (June 2021)
   - [x] Add cloudfare
   - [x] Change Domain from Amazon to github
-  
-

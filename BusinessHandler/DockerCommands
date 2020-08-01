@@ -1,3 +1,0 @@
-docker exec -it 700cfdbd1665 bash
-docker run go-dock
-docker build . -t go-dock
