@@ -18,7 +18,6 @@ func main() {
 	router := gin.Default()
 
 	Controller.InitDatabase(creds)
-	Controller.CovidRetrieval()
 
 	// Query string parameters are parsed using the existing underlying request object.
 	// The request responds to a url matching:  /travel?destination=Spain&origin=USA
