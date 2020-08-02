@@ -1,6 +1,6 @@
 # CanITravelTo
 
-[![YourActionName Actions Status](https://github.com/marcllort/CanITravelTo_Backend/workflows/CI/CD/badge.svg)](https://github.com/marcllort/CanITravelTo_Backend/actions)
+[![YourActionName Actions Status](https://github.com/marcllort/CanITravelTo_Backend/workflows/CI/badge.svg)](https://github.com/marcllort/CanITravelTo_Backend/actions)
 
 ## Database
 
