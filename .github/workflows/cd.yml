@@ -1,4 +1,6 @@
 
+name: CD
+
 on:
   release:
     types: [created]
