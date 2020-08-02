@@ -32,7 +32,10 @@ jobs:
         cd DataRetriever
         go build -o canITravelToDataRetriever
         
+    - name: Decrypt Pem
+      run: gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output key-aws.pem BusinessHandler/Creds/key-aws.pem.gpg
+      env:
+         LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
+         
     - name: Updating production version
-      run: |
-        ls -a
-        
+      run: ssh -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com './update.sh && exit'
