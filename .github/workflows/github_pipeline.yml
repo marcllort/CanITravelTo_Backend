@@ -31,3 +31,8 @@ jobs:
       run: |
         cd DataRetriever
         go build -o canITravelToDataRetriever
+        
+    - name: Updating production version
+      run: |
+        ls -a
+        
