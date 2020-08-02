@@ -32,9 +32,19 @@ jobs:
         cd DataRetriever
         go build -o canITravelToDataRetriever
         
+    #- name: "Prepare SSH key and known hosts"
+     # run: |
+      #  mkdir -p ~/.ssh
+       # echo "${{ secrets.SSH_KEY_PRIVATE }}" > ~/.ssh/id_rsa
+        #chmod 600 ~/.ssh/id_rsa
+        #ssh-keyscan github.com >> ~/.ssh/known_hosts
+        #ssh-keyscan git.eu.s5y.io >> ~/.ssh/known_hosts
+        
     - name: Decrypt PEM and updating production version
       run: |
         gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output key-aws.pem BusinessHandler/Creds/key-aws.pem.gpg
+        ls
+        cat key-aws.pem
         ssh -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com './update.sh && exit'
       env:
          LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
