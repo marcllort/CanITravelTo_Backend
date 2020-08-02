@@ -1,6 +1,6 @@
 # CanITravelTo
 
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+[![YourActionName Actions Status](https://github.com/marcllort/CanITravelTo_Backend/workflows/CI/CD/badge.svg)](https://github.com/marcllort/CanITravelTo_Backend/actions)
 
 ## Database
 
