@@ -80,16 +80,46 @@ Coded in Go. Responsible of updating the Covid daily data, in the future will ha
 It uses a Go-Cronjob to update the data every day at 10:30 AM.
 
 ### Business Handler
-Coded in Go. Resonsible of handling all the requests. Uses Gin-gonic to handle the endpoints and the TLS certificate for the https web.
+Coded in Go. Responsible of handling all the requests. Uses Gin-gonic to handle the endpoints and the TLS certificate for the https web.
 
 ## Docker
 The different microservices are being run with docker-compose in the EC2 AWS instance.
 There are two different Dockerfile's for each microservice, plus the docker-compose file to launch them together, plus create the "internal network" so they can communicate.
 
-Performance wise, the difference between the compiled binary and the docker images has been negligible. Both are extremly fast, averaging around 53ms per request both.
+Performance wise, the difference between the compiled binary and the docker images has been negligible. Both are extremely fast, averaging around 53ms per request both.
+
+### Kubernetes
+Even though is REALLY overkill for this project, due to the small amount of visitors received, I wanted to implement Kubernetes to handle the docker containers.
+I haven't been able to make it work in the production server (EC2 t2.micro instance) due to the small amount of resources. It makes the server unusable, always at 100% CPU and RAM usage.
+
+I have a first implementation of the project running in Kubernetes in my local environment, which I'll upload its configuration when working properly.
+
 
 ## Git
 I'm using a mono-repo, as its enables me to share the docker-compose, readme, credentials... Later on, during the CI/CD is much easier to deal, as there is only one git repository to pull and deal with.
+
+### CI/CD
+I'm using Github Actions, to have everything centralized in Github. It uses a YML file, really similar to BitBucket/Gitlab or Jenkins.
+So far, the steps implemented, build the two microservices, run the unit tests of each one and if everything passed, and we are in the master branch it will SSH into the EC2 instance and perform an update of the docker images, stop the running ones and start the updated images with the latest changes.
+If we are in another branch it will only run the first steps (build and unit tests).
+The next step, will be to develop the integration tests with Postman, and add it as another step.
+
+#### SSH from pipeline
+To ssh to AWS, a pem/key file is needed. As it would be really insecure to upload the key to github, I'm using a workaround. I encrypted (and uploaded to github) the PEM file using:
+```sh
+gpg --quiet --batch --yes --decrypt --passphrase="XXXX" --output key-aws.pem BusinessHandler/Creds/key-aws.pem.gpg
+```
+
+Then in the pipeline I decrypt the file using the passphrase (which is saved as a Secret environment variable), change the permissions and SSH (plus run the update script).
+
+Important using the `-oStrictHostKeyChecking=no` when SSHing from a script/pipeline, so it automatically accepts the ECSDA key.
+
+```sh
+gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output key-aws.pem BusinessHandler/Creds/key-aws.pem.gpg
+chmod 600 key-aws.pem
+ssh -oStrictHostKeyChecking=no -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com './update.sh && exit'
+```
+
 
 ## Frontend
 
@@ -250,21 +280,22 @@ For this deployment I used [this](https://dev.to/yuribenjamin/how-to-deploy-reac
   - [ ] Kubernetes support
   - [ ] Card view for backend response to frontend (show covid cases, visa status...)
   - [ ] Create Postman test scenarios  
-  - [ ] Commentate code 
+  - [x] Commentate code 
   - [ ] Retrieve accesses to the website (IP, origin, destination...) or find solution to log visits/web usage (gin may already have one)
   - [ ] Suggestions in Frontend (i.e You can also go there with your passport!) 
   - [ ] Unify country names between frontend, passportInfo and CovidInfo (maybe new row in Covid info with name of PassportInfo?)
-  - [ ] Add travis-ci or gitlab pipeline and update link of travis-ci build in readme.md
-  - [ ] Improve deployment to github pages and ubuntu improve script
+  - [x] Add travis-ci or gitlab pipeline and update link of travis-ci build in readme.md
+  - [ ] Improve deployment to github pages 
+  - [x] Ubuntu improve update.sh script
   - [ ] Remove countries.go list and just sanitise input to prevent sqlInjection
   - [ ] Add tests to golang and react
   - [ ] Develop good frontend
   - [ ] Protect ip for backend (cors, autotls?)
   - [ ] Make Frontend use GET endpoint
-  - [ ] Archive old frontend repository
+  - [x] Archive old frontend repository
   - [ ] Save user emails from frontend form
-  - [ ] Write frontend README and update REACT part of this one (now use html,css)
-  - [ ] Google SEO
+  - [x] Write frontend README and update REACT part of this one (now use html,css)
+  - [x] Google SEO
   - [ ] Move out from personal mail
   - [ ] Alternative to AWS? 11 months remaining (June 2021)
   - [x] Add cloudfare
