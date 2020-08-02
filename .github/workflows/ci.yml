@@ -34,14 +34,15 @@ jobs:
       run: |
         cd DataRetriever
         go build -o canITravelToDataRetriever
-    - name: Decrypt PEM and updating production version
+        
+    - name: Build and push Docker images
       run: |
         cd BusinessHandler
         docker build -t docker.pkg.github.com/marcllort/canitravelto_backend/business-handler:$(git rev-parse --short HEAD) .
         cd ../DataRetriever
         docker build -t docker.pkg.github.com/marcllort/canitravelto_backend/data-retriever:$(git rev-parse --short HEAD) .
         echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u marcllort --password-stdin
-        docker push docker.pkg.github.com/marcllort/canitravelto_backend/businessHandler:$(git rev-parse --short HEAD)
-        docker push docker.pkg.github.com/marcllort/canitravelto_backend/dataRetriever:$(git rev-parse --short HEAD)   
+        docker push docker.pkg.github.com/marcllort/canitravelto_backend/business-handler:$(git rev-parse --short HEAD)
+        docker push docker.pkg.github.com/marcllort/canitravelto_backend/data-retriever:$(git rev-parse --short HEAD)   
       env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
