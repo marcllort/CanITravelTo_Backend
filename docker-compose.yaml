@@ -4,6 +4,7 @@ services:
   business-handler:
     container_name: business-handler
     image: "docker.pkg.github.com/marcllort/canitravelto_backend/business-handler:${BUSINESS_VERSION}"
+    command: "${DB_PASSWORD}"
     restart: unless-stopped
     ports:
       - "443:443"
@@ -14,7 +15,7 @@ services:
   data-retriever:
     container_name: data-retriever
     image: "docker.pkg.github.com/marcllort/canitravelto_backend/data-retriever:${DATA_VERSION}"
-     #command: "${DB_PASSWORD}"
+    command: "${DB_PASSWORD}"
     restart: unless-stopped
 
 
