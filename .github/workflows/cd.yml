@@ -16,6 +16,15 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       
+    - name: Decrypt Creds
+      run: |
+        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/creds.json BusinessHandler/Creds/creds.json.gpg
+        chmod 600 BusinessHandler/Creds/creds.json
+        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output DataRetriever/Creds/creds.json DataRetriever/Creds/creds.json.gpg
+        chmod 600 DataRetriever/Creds/creds.json
+      env:
+         LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}  
+      
     - name: Build and push Docker images
       run: |
         cd BusinessHandler
@@ -28,11 +37,11 @@ jobs:
       env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
-    #- name: Decrypt PEM and updating production version
-     # run: |
-      #  gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output key-aws.pem BusinessHandler/Creds/key-aws.pem.gpg
-      #  chmod 600 key-aws.pem
-      #  ssh -oStrictHostKeyChecking=no -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com './update.sh && exit'
-     # env:
-      #   LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
+    - name: Decrypt PEM and update production version
+      run: |
+        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output key-aws.pem BusinessHandler/Creds/key-aws.pem.gpg
+        chmod 600 key-aws.pem
+        ssh -oStrictHostKeyChecking=no -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com './update.sh && exit'
+      env:
+         LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
 
