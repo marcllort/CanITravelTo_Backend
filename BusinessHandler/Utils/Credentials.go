@@ -16,7 +16,7 @@ type Credentials struct {
 	database string
 }
 
-func ReadCredentials(credentials string) string {
+func ReadCredentials(credentials, dbpass string) string {
 	file, err := ioutil.ReadFile(credentials)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed read file: %s\n", err)
@@ -36,7 +36,8 @@ func ReadCredentials(credentials string) string {
 
 	var creds Credentials
 	creds.user = m["user"].(string)
-	creds.password = m["password"].(string)
+	creds.password = dbpass
+	//creds.password = m["password"].(string)
 	creds.hostname = m["hostname"].(string)
 	creds.port = m["port"].(string)
 	creds.database = m["database"].(string)
