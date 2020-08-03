@@ -41,7 +41,11 @@ jobs:
       run: |
         gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output key-aws.pem BusinessHandler/Creds/key-aws.pem.gpg
         chmod 600 key-aws.pem
-        ssh -oStrictHostKeyChecking=no -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com './update.sh "$DB_PASSWORD" && exit'
+        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/https-server.crt BusinessHandler/Creds/https-server.crt.gpg
+        chmod 600 BusinessHandler/Creds/https-server.crt
+        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/https-server.key BusinessHandler/Creds/https-server.key.gpg
+        chmod 600 BusinessHandler/Creds/https-server.key
+        ssh -oStrictHostKeyChecking=no -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com "./update.sh $DB_PASSWORD && exit"
       env:
          LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
