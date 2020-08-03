@@ -9,9 +9,9 @@ import (
 	"strings"
 )
 
-func CreateConnection(creds string) *sql.DB {
+func CreateConnection(creds, dbpass string) *sql.DB {
 
-	dbURL := Utils.ReadCredentials(creds + "/creds.json")
+	dbURL := Utils.ReadCredentials(creds+"/creds.json", dbpass)
 
 	db, err := sql.Open("mysql", dbURL)
 	if err != nil {

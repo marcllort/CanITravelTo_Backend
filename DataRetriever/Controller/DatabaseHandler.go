@@ -7,6 +7,6 @@ import (
 
 var db *sql.DB
 
-func InitDatabase(creds string) {
-	db = database.CreateConnection(creds)
+func InitDatabase(creds, dbpass string) {
+	db = database.CreateConnection(creds, dbpass)
 }
