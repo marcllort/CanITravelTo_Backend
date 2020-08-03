@@ -16,6 +16,15 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       
+    - name: Decrypt Creds
+      run: |
+        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/creds.json BusinessHandler/Creds/creds.json.gpg
+        chmod 600 BusinessHandler/Creds/creds.json
+        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output DataRetriever/Creds/creds.json DataRetriever/Creds/creds.json.gpg
+        chmod 600 DataRetriever/Creds/creds.json
+      env:
+         LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}  
+      
     - name: Build and push Docker images
       run: |
         cd BusinessHandler
