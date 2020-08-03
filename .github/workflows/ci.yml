@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI/CD
+name: CI
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -21,7 +21,10 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
+    
+    - name: Setup Go environment
+      uses: actions/setup-go@v2.1.1
+    
     - name: Building Business-Handler binary
       run: |
         cd BusinessHandler
@@ -31,12 +34,3 @@ jobs:
       run: |
         cd DataRetriever
         go build -o canITravelToDataRetriever
-        
-    - name: Decrypt PEM and updating production version
-      run: |
-        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output key-aws.pem BusinessHandler/Creds/key-aws.pem.gpg
-        chmod 600 key-aws.pem
-        ssh -oStrictHostKeyChecking=no -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com './update.sh && exit'
-      env:
-         LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
-
