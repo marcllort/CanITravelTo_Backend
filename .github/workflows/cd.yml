@@ -1,52 +1,55 @@
-
+# Continuous Delivery
 name: CD
 
+# Only will run when a new release is commited
 on:
   release:
     types: [created]
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  delivery:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-      
-    - name: Decrypt Creds
-      run: |
-        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/creds.json BusinessHandler/Creds/creds.json.gpg
-        chmod 600 BusinessHandler/Creds/creds.json
-        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output DataRetriever/Creds/creds.json DataRetriever/Creds/creds.json.gpg
-        chmod 600 DataRetriever/Creds/creds.json
-        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/https-server.crt BusinessHandler/Creds/https-server.crt.gpg
-        chmod 600 BusinessHandler/Creds/https-server.crt
-        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/https-server.key BusinessHandler/Creds/https-server.key.gpg
-        chmod 600 BusinessHandler/Creds/https-server.key
-      env:
-         LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}  
-      
-    - name: Build and push Docker images
-      run: |
-        cd BusinessHandler
-        docker build -t docker.pkg.github.com/marcllort/canitravelto_backend/business-handler:$(git rev-parse --short HEAD) .
-        cd ../DataRetriever
-        docker build -t docker.pkg.github.com/marcllort/canitravelto_backend/data-retriever:$(git rev-parse --short HEAD) .
-        echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u marcllort --password-stdin
-        docker push docker.pkg.github.com/marcllort/canitravelto_backend/business-handler:$(git rev-parse --short HEAD)
-        docker push docker.pkg.github.com/marcllort/canitravelto_backend/data-retriever:$(git rev-parse --short HEAD)   
-      env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-    - name: Decrypt PEM and update production version
-      run: |
-        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output key-aws.pem BusinessHandler/Creds/key-aws.pem.gpg
-        chmod 600 key-aws.pem
-        ssh -oStrictHostKeyChecking=no -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com "./update.sh $DB_PASSWORD && exit"
-      env:
-         LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
-         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+        # Decrypts credentials needed to build the docker image
+      - name: Decrypt Creds
+        run: |
+          gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/creds.json BusinessHandler/Creds/creds.json.gpg
+          chmod 600 BusinessHandler/Creds/creds.json
+          gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output DataRetriever/Creds/creds.json DataRetriever/Creds/creds.json.gpg
+          chmod 600 DataRetriever/Creds/creds.json
+          gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/https-server.crt BusinessHandler/Creds/https-server.crt.gpg
+          chmod 600 BusinessHandler/Creds/https-server.crt
+          gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/https-server.key BusinessHandler/Creds/https-server.key.gpg
+          chmod 600 BusinessHandler/Creds/https-server.key
+        env:
+          LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
+
+        # Build docker image, tagged with commit number and logs in docker repo
+      - name: Build and push Docker images
+        run: |
+          cd BusinessHandler
+          docker build -t docker.pkg.github.com/marcllort/canitravelto_backend/business-handler:$(git rev-parse --short HEAD) .
+          cd ../DataRetriever
+          docker build -t docker.pkg.github.com/marcllort/canitravelto_backend/data-retriever:$(git rev-parse --short HEAD) .
+          echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u marcllort --password-stdin
+          docker push docker.pkg.github.com/marcllort/canitravelto_backend/business-handler:$(git rev-parse --short HEAD)
+          docker push docker.pkg.github.com/marcllort/canitravelto_backend/data-retriever:$(git rev-parse --short HEAD)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        # Decrypts PEM (SSH key) to access EC2 and update the production build
+      - name: Decrypt PEM and update production version
+        run: |
+          gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output key-aws.pem BusinessHandler/Creds/key-aws.pem.gpg
+          chmod 600 key-aws.pem
+          ssh -oStrictHostKeyChecking=no -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com "./update.sh $DB_PASSWORD && exit"
+        env:
+          LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 

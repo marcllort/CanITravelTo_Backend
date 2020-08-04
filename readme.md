@@ -9,7 +9,7 @@
 
 Set its configuration to publicly available.
 
-In Security groups, add 2 inbound rules (port 3306 mysql), one for your development computer with your own IP, and another for the EC2 instances where the backend server is hosted. No need to set the IP, just the name of its security group/launch-wizard number 
+In Security groups, add 2 inbound rules (port 3306 mysql), one for your development computer with your own IP, and another for the EC2 instances where the backend server is being hosted. No need to set the IP, just the name of its security group/launch-wizard number.
 
 The current dataset in the DB has the information from [PassportIndex](passportindex.com) of the places you can travel with your passport. 
 
@@ -44,11 +44,11 @@ The only configuration needed, is in Security groups, where there's the need to,
 `ssh -i keypair.pem ubuntu@[Public-DNS] (i.e= whatever.eu-west-3.compute.amazonaws.com)`
 
 ##### New deployments:
-So far, I have a simple bash script responsible of checking if there have been new "pushes" in git, and if there's been, it updates automatically the version deployed to the one in Github. This process is a service (cronjob) that runs daily, but for now I have it disabled and I run it manually once I do changes.
+So far, I have a simple bash script responsible for checking if there have been new "pushes" in git, and if there's been, it updates automatically the version deployed to the one in Github. This process is a service (cronjob) that runs daily, but for now I have it disabled and I run it manually once I do changes.
 
 ## Backend GoLang
 
-Backend is written in Go, and using *Gin framework* for the http requests. The connection with the mySQL DB is done with *go-sql-driver*. Now, there are two microservices, one for data retrieval, and the other one that handles the requests.
+Backend is being written in Go, and using *Gin framework* for the http requests. The connection with the mySQL DB is done with *go-sql-driver*. Now, there are two microservices, one for data retrieval, and the other one handling the requests.
 
 When working on local, you should connect to *localhost:8080/travel*. If testing with the hosted backend in EC2, *publicIP:8080/travel*.
 
@@ -77,11 +77,11 @@ So far, the response time in local is about 1ms, while in AWS is around 36ms. In
 To stress test the backend, I used the chrome extension named [RestfulStress](https://chrome.google.com/webstore/detail/restful-stress/lljgneahfmgjmpglpbhmkangancgdgeb).
 
 ### Data Retriever
-Coded in Go. Responsible of updating the Covid daily data, in the future will handle other Database related functions.
+Coded in Go. Responsible for updating the Covid daily data, in the future will handle other Database related functions.
 It uses a Go-Cronjob to update the data every day at 10:30 AM.
 
 ### Business Handler
-Coded in Go. Responsible of handling all the requests. Uses Gin-gonic to handle the endpoints and the TLS certificate for the https web.
+Coded in Go. Responsible for handling all the requests. Uses Gin-gonic to handle the endpoints and the TLS certificate for the https web.
 
 ## Docker
 The different microservices are being run with docker-compose in the EC2 AWS instance.
@@ -98,15 +98,23 @@ I have a first implementation of the project running in Kubernetes in my local e
 
 ## Git
 I'm using a mono-repo, as its enables me to share the docker-compose, readme, credentials... Later on, during the CI/CD is much easier to deal, as there is only one git repository to pull and deal with.
+I also use the Github Projects feature, with the Kanban methodology to organize the new "stories" I have to develop/fix.
 
 ### CI/CD
 I'm using Github Actions, to have everything centralized in Github. It uses a YML file, really similar to BitBucket/Gitlab or Jenkins.
-So far, the steps implemented, build the two microservices, run the unit tests of each one and if everything passed, and we are in the master branch it will SSH into the EC2 instance and perform an update of the docker images, stop the running ones and start the updated images with the latest changes.
-If we are in another branch it will only run the first steps (build and unit tests).
+So far I have two pipelines, the CI and CD. In the CI pipeline the steps implemented are: build the two microservices, run the unit tests of each microservice. If it fails it will notify me through an email.
+
+In the CD pipeline, if the commit is in the master branch, and it's a commit marked as a release, it will decrypt the Credentials needed to build each microservice image (explained in the next paragraph), build and upload the new Docker images, and then
+SSH into the EC2 instance to stop the old docker images and start the updated images with the latest changes.
+Another solution, could be building the docker images in the server instead of doing it directly in the pipeline. This would allow me to just have the Credentials in my server, and avoid uploading the encrypted version to Github.
+In case it was a long-term project, or a business it would probably be better to keep the Creds only on your server, but again, the Repository would be private, so the security shouldn't be a big problem... Make your choice!
+I decided to use both solutions, the building of the image in the pipeline, and the deployment is done through an SSH script.
+
+If we are in another branch it will only run the CI pipeline (build and unit tests).
 The next step, will be to develop the integration tests with Postman, and add it as another step.
 
 #### SSH from pipeline
-To ssh to AWS, a pem/key file is needed. As it would be really insecure to upload the key to github, I'm using a workaround. I encrypted (and uploaded to github) the PEM file using:
+To ssh to AWS, a pem/key file is needed. As it would be really insecure to upload the key to github, I'm using a workaround (also used for the Credentials in the CI/CD pipelines). I encrypted (and uploaded to github) the PEM file using:
 ```sh
 gpg --quiet --batch --yes --decrypt --passphrase="XXXX" --output key-aws.pem BusinessHandler/Creds/key-aws.pem.gpg
 ```
