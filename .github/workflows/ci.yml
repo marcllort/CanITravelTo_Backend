@@ -9,7 +9,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build-test:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -33,9 +33,18 @@ jobs:
         run: |
           cd DataRetriever
           go build -o canITravelToDataRetriever
+        # Decrypts credentials needed to build the docker image
+      - name: Decrypt Creds
+          run: |
+            gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/creds.json BusinessHandler/Creds/creds.json.gpg
+            chmod 600 BusinessHandler/Creds/creds.json
+            gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output DataRetriever/Creds/creds.json DataRetriever/Creds/creds.json.gpg
+            chmod 600 DataRetriever/Creds/creds.json
+          env:
+            LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
 
         # Test of Business-Handler
-      - name: Building Business-Handler binary
+      - name: Testing Business-Handler
         run: |
           cd BusinessHandler/Tests/Controller
           go test -password=$DB_PASSWORD
@@ -45,7 +54,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
         # Test of Data-Retriever
-      - name: Building Data-Retriever binary
+      - name: Testing Data-Retriever
         run: |
           cd DataRetriever/Tests
           go test -password=$DB_PASSWORD
