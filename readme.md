@@ -53,7 +53,7 @@ Backend is being written in Go, and using *Gin framework* for the http requests.
 When working on local, you should connect to *localhost:8080/travel*. If testing with the hosted backend in EC2, *publicIP:8080/travel*.
 
 ##### Libraries used:
-  - Gin
+  - GinGonic
   - go-sql-driver
 
 Using the following commands, go generates [Go modules](https://blog.friendsofgo.tech/posts/go-modules-en-tres-pasos/), which facilitates the download of the different packages/dependencies of the project.
@@ -66,11 +66,14 @@ The request to the backend should always be a *POST*, and this could be an examp
 ```json
     {
         "destination": "Spain",
-        "origin": "France"
+        "origin": "France",
+        "key": "XXXXXX"
     }
 ```
+The same endpoint is also implemented with GET, but not being used at the moment. 
+The body of the JSON, also accepts and api-key field, though is not being enforced for now.
 
-When running the *Gin router* previously I used `run`, which serves HTTP. But since being deployed I use `runTLS`, which servers HTTPS. In this case you need to provide two certificates, later explained in Domains and Cloudfare.
+When running the *Gin router* previously I used `run`, which serves HTTP. But since being deployed I use `runTLS`, which serves HTTPS. In this case you need to provide two certificates, later explained in Domains and Cloudfare.
 
 So far, the response time in local is about 1ms, while in AWS is around 36ms. In both cases has been stress tested with thousands of requests every 1ms, and has been able to not drop a single request.
 
@@ -81,11 +84,11 @@ Coded in Go. Responsible for updating the Covid daily data, in the future will h
 It uses a Go-Cronjob to update the data every day at 10:30 AM.
 
 ### Business Handler
-Coded in Go. Responsible for handling all the requests. Uses Gin-gonic to handle the endpoints and the TLS certificate for the https web.
+Coded in Go. Responsible for handling all the requests. Uses Gin-gonic to handle the endpoints in HTTPS mode, so the content can be served to the HTTPS frontend.
 
 ## Docker
-The different microservices are being run with docker-compose in the EC2 AWS instance.
-There are two different Dockerfile's for each microservice, plus the docker-compose file to launch them together, plus create the "internal network" so they can communicate.
+The different microservices are being run with docker-compose in the EC2 AWS instance. The images are hosted in a Github private docker registry for this project. I added an automation, so the older images are deleted once a month, or when a limit is reached.
+There are two different Dockerfile's for each microservice, plus the docker-compose file to launch them together, plus create the "internal network", so they can communicate.
 
 Performance wise, the difference between the compiled binary and the docker images has been negligible. Both are extremely fast, averaging around 53ms per request both.
 
@@ -95,7 +98,6 @@ I haven't been able to make it work in the production server (EC2 t2.micro insta
 
 I have a first implementation of the project running in Kubernetes in my local environment, which I'll upload its configuration when working properly.
 
-
 ## Git
 I'm using a mono-repo, as its enables me to share the docker-compose, readme, credentials... Later on, during the CI/CD is much easier to deal, as there is only one git repository to pull and deal with.
 I also use the Github Projects feature, with the Kanban methodology to organize the new "stories" I have to develop/fix.
@@ -104,11 +106,12 @@ I also use the Github Projects feature, with the Kanban methodology to organize 
 I'm using Github Actions, to have everything centralized in Github. It uses a YML file, really similar to BitBucket/Gitlab or Jenkins.
 So far I have two pipelines, the CI and CD. In the CI pipeline the steps implemented are: build the two microservices, run the unit tests of each microservice. If it fails it will notify me through an email.
 
-In the CD pipeline, if the commit is in the master branch, and it's a commit marked as a release, it will decrypt the Credentials needed to build each microservice image (explained in the next paragraph), build and upload the new Docker images, and then
+In the CD pipeline, if the commit is in the master branch, and it's a commit marked as a release, it will decrypt the Credentials needed to build each microservice image (explained in the next paragraph), 
+build and upload the new Docker images (to Github's docker registry), and then
 SSH into the EC2 instance to stop the old docker images and start the updated images with the latest changes.
 Another solution, could be building the docker images in the server instead of doing it directly in the pipeline. This would allow me to just have the Credentials in my server, and avoid uploading the encrypted version to Github.
 In case it was a long-term project, or a business it would probably be better to keep the Creds only on your server, but again, the Repository would be private, so the security shouldn't be a big problem... Make your choice!
-I decided to use both solutions, the building of the image in the pipeline, and the deployment is done through an SSH script.
+I decided to use both solutions, the building of the image in the pipeline, and the deployment through an SSH script.
 
 If we are in another branch it will only run the CI pipeline (build and unit tests).
 The next step, will be to develop the integration tests with Postman, and add it as another step.
@@ -144,7 +147,7 @@ Both are using Cloudfare, which provides caching for the website, important for 
 
 At first, only the frontend used Cloudfare as there was no need for the backend to use HTTPS, until I saw that an HTTPS website can't consume from a HTTP API. The options where to go back to HTTP in the frontend (I didn't manage to do it, because Github Pages always provides a HTTPS).
 
-The second option was to serve the API as HTTPS. I created my own certificates, but as they were self-signed, HTTPS didn't like them, so I had to have valid certificates. To get a SSL certificate, you need a domain name, so I then acquired canitravelto.wtf, to use it instead of the public AWS IP.
+The second option was to serve the API as HTTPS. I created my own certificates, but as they were self-signed, HTTPS didn't like them, so I had to have valid certificates. To get an SSL certificate, you need a domain name, so I then acquired canitravelto.wtf, to use it instead of the public AWS IP.
 
 [canitravelto.com](canitravelto.com) is hosted by godaddy.com
 

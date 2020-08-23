@@ -33,3 +33,21 @@ jobs:
         run: |
           cd DataRetriever
           go build -o canITravelToDataRetriever
+
+        # Test of Business-Handler
+      - name: Building Business-Handler binary
+        run: |
+          cd BusinessHandler/Tests/Controller
+          go test -password=$DB_PASSWORD
+          cd ../Utils
+          go test
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+        # Test of Data-Retriever
+      - name: Building Data-Retriever binary
+        run: |
+          cd DataRetriever/Tests
+          go test -password=$DB_PASSWORD
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}

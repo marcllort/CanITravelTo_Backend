@@ -1,0 +1,6 @@
+{
+  "user": "testUser",
+  "hostname": "testURL",
+  "port": "3306",
+  "database": "testDB"
+}
