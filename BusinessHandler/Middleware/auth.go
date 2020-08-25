@@ -25,8 +25,12 @@ func validateToken(c *gin.Context) {
 	} else if checkToken(token) {
 		c.Next()
 	} else {
-		c.String(http.StatusOK, "Wrong API-Key... you'll never guess it, its a SUPER_SECRET API KEY!")
-		c.AbortWithStatus(401)
+		if c.Request.Method != "OPTIONS" {
+			c.Next()
+		} else {
+			c.String(http.StatusOK, "Wrong API-Key... you'll never guess it, its a SUPER_SECRET API KEY!")
+			c.AbortWithStatus(401)
+		}
 	}
 }
 

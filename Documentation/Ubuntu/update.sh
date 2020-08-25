@@ -12,8 +12,8 @@ docker rmi canitraveltobackend_business-handler > /dev/null 2>&1
 docker rmi canitraveltobackend_data-retriever > /dev/null 2>&1
 
 echo -e "\033[1;34m [Docker]\e[0m Pulling new images..."
-docker pull docker.pkg.github.com/marcllort/canitravelto_backend/data-retriever:"$(git rev-parse --short HEAD)"  > /dev
-docker pull docker.pkg.github.com/marcllort/canitravelto_backend/business-handler:"$(git rev-parse --short HEAD)"  > /d$
+docker pull docker.pkg.github.com/marcllort/canitravelto_backend/data-retriever:"$(git rev-parse --short HEAD)"  > /dev/null 2>&1
+docker pull docker.pkg.github.com/marcllort/canitravelto_backend/business-handler:"$(git rev-parse --short HEAD)"  > /dev/null 2>&1
 
 echo -e "\033[1;36m [Compose]\e[0m Docker-Compose up! Starting..."
 BUSINESS_VERSION="$(git rev-parse --short HEAD)" DATA_VERSION="$(git rev-parse --short HEAD)" DB_PASSWORD="$1" docker-compose up -d  > /dev/null 2>&1
