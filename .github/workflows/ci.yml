@@ -40,11 +40,15 @@ jobs:
           chmod 600 BusinessHandler/Creds/creds.json
           gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output DataRetriever/Creds/creds.json DataRetriever/Creds/creds.json.gpg
           chmod 600 DataRetriever/Creds/creds.json
+          gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/https-server.crt BusinessHandler/Creds/https-server.crt.gpg
+          chmod 600 BusinessHandler/Creds/https-server.crt
+          gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output BusinessHandler/Creds/https-server.key BusinessHandler/Creds/https-server.key.gpg
+          chmod 600 BusinessHandler/Creds/https-server.key
         env:
           LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
 
         # Test of Business-Handler
-      - name: Testing Business-Handler
+      - name: Unit testing Business-Handler
         run: |
           cd BusinessHandler/Tests/Controller
           go test -password=$DB_PASSWORD
@@ -54,9 +58,28 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
         # Test of Data-Retriever
-      - name: Testing Data-Retriever
+      - name: Unit testing Data-Retriever
         run: |
           cd DataRetriever/Tests
           go test -password=$DB_PASSWORD
         env:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+        # Postman Test of Business-Handler
+      - name: Integration/E2E testing Business-Handler
+        run: |
+          cd BusinessHandler
+          go run Creds $DB_PASSWORD
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      - name: Run API Tests
+        id: run-newman
+        uses: anthonyvscode/newman-action@v1
+        with:
+          collection: Postman/CanITravelToLocal.postman_collection.json
+          reporters: cli
+
+      - name: Output summary to console
+        run: echo ${{ steps.run-api-tests.outputs.summary }}
+
