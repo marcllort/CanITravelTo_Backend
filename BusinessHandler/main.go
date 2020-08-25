@@ -3,7 +3,6 @@ package main
 import (
 	"CanITravelTo/BusinessHandler/Controller"
 	"CanITravelTo/BusinessHandler/Middleware"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"io"
 	"os"
@@ -21,7 +20,7 @@ func main() {
 	router := gin.Default()
 
 	router.Use(Middleware.AuthMiddleware())
-	router.Use(cors.Default())
+	//router.Use(cors.Default())
 
 	Controller.InitDatabase(creds, dbpass)
 
