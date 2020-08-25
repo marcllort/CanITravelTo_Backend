@@ -77,6 +77,7 @@ jobs:
         run: |
           cd BusinessHandler
           sudo go run main.go Creds $DB_PASSWORD &
+          cd ..
           npm install -g newman 2>&1
           newman run Documentation/Postman/CanITravelToLocal.postman_collection.json -reporters cli,html --insecure
         env:
