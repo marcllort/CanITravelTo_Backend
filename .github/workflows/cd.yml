@@ -54,11 +54,11 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       - name: Delete old package Business-Handler version
-        - uses: actions/delete-package-versions@v1.0.3
+          uses: actions/delete-package-versions@v1.0.3
           with:
             package-name: 'business-handler'
 
       - name: Delete old package Data-Retriever version
-        - uses: actions/delete-package-versions@v1.0.3
+          uses: actions/delete-package-versions@v1.0.3
           with:
             package-name: 'data-retriever'
