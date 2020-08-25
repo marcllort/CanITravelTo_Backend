@@ -12,7 +12,6 @@ const (
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		validateToken(c)
-		c.Next()
 	}
 }
 
