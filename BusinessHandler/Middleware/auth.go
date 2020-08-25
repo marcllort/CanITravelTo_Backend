@@ -17,7 +17,7 @@ func AuthMiddleware() gin.HandlerFunc {
 }
 
 func validateToken(c *gin.Context) {
-	if c.Request.Method == "OPTIONS" {
+	if c.Request.Method != "OPTIONS" {
 		token := c.Request.Header.Get("X-Auth-Token")
 
 		if token == "" {
