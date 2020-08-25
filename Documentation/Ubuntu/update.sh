@@ -22,3 +22,5 @@ BUSINESS_VERSION="$(git rev-parse --short HEAD)" DATA_VERSION="$(git rev-parse -
 echo -e "\033[1;32m [CanITravelTo]\e[0m CanITravelTo up and running!"
 
 cd
+
+BUSINESS_VERSION="$(git rev-parse --short HEAD)" DATA_VERSION="$(git rev-parse --short HEAD)" DB_PASSWORD="marcpassword" docker-compose up -d
