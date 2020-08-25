@@ -90,13 +90,16 @@ Coded in Go. Responsible for handling all the requests. Uses Gin-gonic to handle
 The different microservices are being run with docker-compose in the EC2 AWS instance. The images are hosted in a Github private docker registry for this project. I added an automation, so the older images are deleted once a month, or when a limit is reached.
 There are two different Dockerfile's for each microservice, plus the docker-compose file to launch them together, plus create the "internal network", so they can communicate.
 
-Performance wise, the difference between the compiled binary and the docker images has been negligible. Both are extremely fast, averaging around 53ms per request both.
+Performance wise, the difference between the compiled binary and the docker images has been negligible. Both are extremely fast, averaging around 53ms per request both. The backend itself, from when it receives the request till it sends back the response just takes 5 or 6ms.
 
-Binary response time:
+Backend "logic" (Docker) response time, 5ms (POST/GET), 12micros (OPTIONS):
+![Backend "logic" (Docker) response time](https://github.com/marcllort/CanITravelTo_Backend/blob/master/Documentation/Assets/backend-response-time.PNG)
+
+Binary response time, 51ms:
 
 ![Binary response time](https://github.com/marcllort/CanITravelTo_Backend/blob/master/Documentation/Assets/binary-response-time.PNG)
 
-Docker response time:
+Docker response time, 53ms:
 
 ![Docker response time](https://github.com/marcllort/CanITravelTo_Backend/blob/master/Documentation/Assets/docker-response-time.PNG)
 
