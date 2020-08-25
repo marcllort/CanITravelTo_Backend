@@ -69,7 +69,7 @@ jobs:
       - name: Integration/E2E testing Business-Handler
         run: |
           cd BusinessHandler
-          go run Creds $DB_PASSWORD
+          go run main.go Creds $DB_PASSWORD
         env:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
