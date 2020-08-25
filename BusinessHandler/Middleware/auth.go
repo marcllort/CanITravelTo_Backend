@@ -20,6 +20,9 @@ func validateToken(c *gin.Context) {
 	token := c.Request.Header.Get("X-Auth-Token")
 
 	if c.Request.Method == "OPTIONS" {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
+		c.JSON(http.StatusOK, struct{}{})
 		c.Next()
 	} else if token == "" {
 		c.String(http.StatusOK, "API-Key required")
