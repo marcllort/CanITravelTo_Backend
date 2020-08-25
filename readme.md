@@ -195,11 +195,13 @@ In the case of Github Pages (canitravelto.com) just follow the Cloudfare set-up.
 
 Another change to be done, is CORS in the API requests. CORS stands for Cross-origin resource sharing, which means that it will consume resources from another site. If not correctly configured, the requests will fail.
 
-To make this work, in the frontend we only need to add to the header of the request this two lines:
+To make this work, in the frontend we only need to add to the header of the request this three lines:
 
  `myHeaders.append("Access-Control-Allow-Origin", "*");`
     
  `myHeaders.append("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers");`
+ 
+ `myHeaders.append("X-Auth-Token", "SUPER_SECRET_API_KEY")`
 
 
 #### Backend

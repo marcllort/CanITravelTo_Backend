@@ -20,7 +20,6 @@ func main() {
 	router := gin.Default()
 
 	router.Use(Middleware.AuthMiddleware())
-	//router.Use(cors.Default())
 
 	Controller.InitDatabase(creds, dbpass)
 
