@@ -79,15 +79,6 @@ jobs:
           sudo go run main.go Creds $DB_PASSWORD &
           cd ..
           npm install -g newman 2>&1
-          newman run Documentation/Postman/CanITravelToLocal.postman_collection.json --insecure
+          newman run Documentation/Postman/CanITravelToLocal.postman_collection.json --insecure --reporters cli
         env:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        id: run-newman
-        uses: anthonyvscode/newman-action@v1
-        with:
-          collection: Documentation/Postman/CanITravelToLocal.postman_collection.json
-          reporters: cli
-
-      - name: Output summary to console
-        run: echo ${{ steps.run-api-tests.outputs.summary }}
-
