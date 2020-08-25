@@ -20,10 +20,10 @@ jobs:
 
       # Installs NPM
       - uses: actions/setup-node@v2-beta
-          with:
-            node-version: '12'
-            collectionID: 10954437-8cb0d465-dff6-4319-a607-caad24998335
-            environmentID: 98798-a974f882-8ecg0-4c80-9901-a583778393987a
+        with:
+          node-version: '12'
+          collectionID: 10954437-8cb0d465-dff6-4319-a607-caad24998335
+          environmentID: 98798-a974f882-8ecg0-4c80-9901-a583778393987a
 
         # Go environment check out (not needed for now till tests run)
       - name: Setup Go environment
