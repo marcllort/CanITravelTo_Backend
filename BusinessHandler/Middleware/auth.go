@@ -19,18 +19,16 @@ func AuthMiddleware() gin.HandlerFunc {
 func validateToken(c *gin.Context) {
 	token := c.Request.Header.Get("X-Auth-Token")
 
-	if token == "" {
+	if c.Request.Method != "OPTIONS" {
+		c.Next()
+	} else if token == "" {
 		c.String(http.StatusOK, "API-Key required")
 		c.AbortWithStatus(401)
 	} else if checkToken(token) {
 		c.Next()
 	} else {
-		if c.Request.Method != "OPTIONS" {
-			c.Next()
-		} else {
-			c.String(http.StatusOK, "Wrong API-Key... you'll never guess it, its a SUPER_SECRET API KEY!")
-			c.AbortWithStatus(401)
-		}
+		c.String(http.StatusOK, "Wrong API-Key... you'll never guess it, its a SUPER_SECRET API KEY!")
+		c.AbortWithStatus(401)
 	}
 }
 
