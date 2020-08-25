@@ -67,11 +67,11 @@ The request to the backend should always be a *POST*, and this could be an examp
     {
         "destination": "Spain",
         "origin": "France",
-        "key": "XXXXXX"
     }
 ```
 The same endpoint is also implemented with GET, but not being used at the moment. 
-The body of the JSON, also accepts and api-key field, though is not being enforced for now.
+The request must have a 'X-Auth-Token' with the API-KEY (for now the token is "SUPER_SECRET_API_KEY", original, I know xD) if not, a 401 Unauthorized code will be given.
+To enforce the api key, a middleware is being used, which is added to the "router" so every time it receives a request the auth check is done.
 
 When running the *Gin router* previously I used `run`, which serves HTTP. But since being deployed I use `runTLS`, which serves HTTPS. In this case you need to provide two certificates, later explained in Domains and Cloudfare.
 
@@ -92,6 +92,14 @@ There are two different Dockerfile's for each microservice, plus the docker-comp
 
 Performance wise, the difference between the compiled binary and the docker images has been negligible. Both are extremely fast, averaging around 53ms per request both.
 
+Binary response time:
+
+![Binary response time](https://github.com/marcllort/CanITravelTo_Backend/blob/master/Documentation/Assets/binary-response-time.PNG)
+
+Docker response time:
+
+![Docker response time](https://github.com/marcllort/CanITravelTo_Backend/blob/master/Documentation/Assets/docker-response-time.PNG)
+
 ### Kubernetes
 Even though is REALLY overkill for this project, due to the small amount of visitors received, I wanted to implement Kubernetes to handle the docker containers.
 I haven't been able to make it work in the production server (EC2 t2.micro instance) due to the small amount of resources. It makes the server unusable, always at 100% CPU and RAM usage.
@@ -100,21 +108,44 @@ I have a first implementation of the project running in Kubernetes in my local e
 
 ## Git
 I'm using a mono-repo, as its enables me to share the docker-compose, readme, credentials... Later on, during the CI/CD is much easier to deal, as there is only one git repository to pull and deal with.
-I also use the Github Projects feature, with the Kanban methodology to organize the new "stories" I have to develop/fix.
+I also use the [Github Projects](https://github.com/marcllort/CanITravelTo_Backend/projects/1) feature, with the Kanban methodology to organize the new "stories" I have to develop/fix.
 
 ### CI/CD
 I'm using Github Actions, to have everything centralized in Github. It uses a YML file, really similar to BitBucket/Gitlab or Jenkins.
-So far I have two pipelines, the CI and CD. In the CI pipeline the steps implemented are: build the two microservices, run the unit tests of each microservice. If it fails it will notify me through an email.
 
-In the CD pipeline, if the commit is in the master branch, and it's a commit marked as a release, it will decrypt the Credentials needed to build each microservice image (explained in the next paragraph), 
-build and upload the new Docker images (to Github's docker registry), and then
-SSH into the EC2 instance to stop the old docker images and start the updated images with the latest changes.
+So far I have [two pipelines](https://github.com/marcllort/CanITravelTo_Backend/actions), the CI ([ci.yml](https://github.com/marcllort/CanITravelTo_Backend/blob/master/.github/workflows/ci.yml)) and CD ([cd.yml](https://github.com/marcllort/CanITravelTo_Backend/blob/master/.github/workflows/cd.yml)). 
+
+In the CI pipeline the steps implemented are: build the two microservices, run the unit and integration/E2E tests of each microservice. If it fails it will notify me through an email.
+
+The Unit tests are done with the vanilla golang test methodology, similar to JUnit. The E2E tests, are a collection of Postman calls/tests that are being run in the pipeline with Newman (cli version of Postman).
+The tests are written in Javascript, here there is a simple example:
+
+```javascript
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("No error messages", function () {
+    var jsonData = pm.response.json();
+    pm.expect(jsonData.error).to.eql("");
+});
+
+pm.test("Origin/Destination Correct", function () {
+    var jsonData = pm.response.json();
+    pm.expect(jsonData.origin).to.eql("France");
+    pm.expect(jsonData.destination).to.eql("Spain");
+});
+```
+
+In the CD pipeline, if the commit is in the master branch, and it's a commit marked as a release, it will decrypt the Credentials needed to build each microservice image (explained in the next [section](https://github.com/marcllort/CanITravelTo_Backend#ssh-from-pipeline)), 
+build and upload the new Docker images (to Github's docker registry), and thenSSH into the EC2 instance to stop the old docker images and start the updated images with the latest changes.
+
 Another solution, could be building the docker images in the server instead of doing it directly in the pipeline. This would allow me to just have the Credentials in my server, and avoid uploading the encrypted version to Github.
 In case it was a long-term project, or a business it would probably be better to keep the Creds only on your server, but again, the Repository would be private, so the security shouldn't be a big problem... Make your choice!
 I decided to use both solutions, the building of the image in the pipeline, and the deployment through an SSH script.
 
-If we are in another branch it will only run the CI pipeline (build and unit tests).
-The next step, will be to develop the integration tests with Postman, and add it as another step.
+If we are in another branch (other than master) it will only run the CI pipeline (build and unit/integration tests).
+
 
 #### SSH from pipeline
 To ssh to AWS, a pem/key file is needed. As it would be really insecure to upload the key to github, I'm using a workaround (also used for the Credentials in the CI/CD pipelines). I encrypted (and uploaded to github) the PEM file using:
@@ -141,7 +172,7 @@ In the future, I plan to move to a React frontend. Already have a React implemen
 
 ## Domains and Cloudfare
 
-Currently two domains are being used, canitravelto.com (where the frontend is hosted, Github Pages) and canitravelto.wtf (where the backend API is hosted, EC2 AWS).
+Currently, two domains are being used: canitravelto.com (where the frontend is hosted, Github Pages) and canitravelto.wtf (where the backend API is hosted, EC2 AWS).
 
 Both are using Cloudfare, which provides caching for the website, important for the frontend as Github offers a maximum of 100GB of bandwidth per month, but most importantly it provides TLS certificates, so the website and backend are HTTPS encrypted and safe to use.
 

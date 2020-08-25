@@ -2,6 +2,7 @@ package main
 
 import (
 	"CanITravelTo/BusinessHandler/Controller"
+	"CanITravelTo/BusinessHandler/Middleware"
 	"github.com/gin-gonic/gin"
 	"io"
 	"os"
@@ -17,6 +18,8 @@ func main() {
 
 	gin.DefaultWriter = io.MultiWriter(myfile, os.Stdout)
 	router := gin.Default()
+
+	router.Use(Middleware.AuthMiddleware())
 
 	Controller.InitDatabase(creds, dbpass)
 

@@ -34,10 +34,21 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "X-Auth-Token",
+						"value": "SUPER_SECRET_API_KEY",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"destination\": \"Spain\",\r\n    \"origin\": \"France\"\r\n}"
+					"raw": "{\r\n    \"destination\": \"Spain\",\r\n    \"origin\": \"France\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "https://localhost/travel",
@@ -81,7 +92,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "X-Auth-Token",
+						"value": "SUPER_SECRET_API_KEY",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "https://localhost/travel?origin=France&destination=Spain",
 					"protocol": "https",
@@ -127,7 +144,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "X-Auth-Token",
+						"value": "SUPER_SECRET_API_KEY",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "https://localhost/test",
 					"protocol": "https",
@@ -159,7 +182,13 @@
 			],
 			"request": {
 				"method": "OPTIONS",
-				"header": [],
+				"header": [
+					{
+						"key": "X-Auth-Token",
+						"value": "SUPER_SECRET_API_KEY",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "https://localhost/travel",
 					"protocol": "https",
