@@ -7,6 +7,31 @@
 	"item": [
 		{
 			"name": "Basic Local Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "352677e9-90d3-4ffd-a78f-4000f250c041",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"No error messages\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.error).to.eql(\"\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Origin/Destination Correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.origin).to.eql(\"France\");\r",
+							"    pm.expect(jsonData.destination).to.eql(\"Spain\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -29,17 +54,52 @@
 		},
 		{
 			"name": "Get Travel Local Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7746f264-32d2-457c-b729-43a6f2a16435",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"No error messages\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.error).to.eql(\"\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Origin/Destination Correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.origin).to.eql(\"France\");\r",
+							"    pm.expect(jsonData.destination).to.eql(\"Spain\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost/travel",
+					"raw": "https://localhost/travel?origin=France&destination=Spain",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
 					"path": [
 						"travel"
+					],
+					"query": [
+						{
+							"key": "origin",
+							"value": "France"
+						},
+						{
+							"key": "destination",
+							"value": "Spain"
+						}
 					]
 				}
 			},
@@ -47,6 +107,24 @@
 		},
 		{
 			"name": "Get Test Local Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c306f3d2-dee4-4823-b327-e0cdc18631c6",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Hello visitor\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -64,30 +142,21 @@
 			"response": []
 		},
 		{
-			"name": "Basic Com Local Request",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"destination\": \"Spain\",\r\n    \"origin\": \"France\"\r\n}"
-				},
-				"url": {
-					"raw": "https://localhost:3000",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "3000"
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Options Travel Local Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5119cfac-e84e-418d-be14-836cb945d225",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "OPTIONS",
 				"header": [],

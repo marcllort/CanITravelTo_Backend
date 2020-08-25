@@ -7,6 +7,31 @@
 	"item": [
 		{
 			"name": "Basic Travel WTF Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d546f8ed-5be6-44e3-a14a-57340c8eb1bf",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"No error messages\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.error).to.eql(\"\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Origin/Destination Correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.origin).to.eql(\"France\");\r",
+							"    pm.expect(jsonData.destination).to.eql(\"Spain\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -30,6 +55,24 @@
 		},
 		{
 			"name": "Get Test WTF Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c141c119-256a-4dfe-bc5a-405b5591c693",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Hello visitor\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -49,11 +92,36 @@
 		},
 		{
 			"name": "Get Travel WTF Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cccf1c06-e930-4960-8c3f-0e885228febb",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"No error messages\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.error).to.eql(\"\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Origin/Destination Correct\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.origin).to.eql(\"France\");\r",
+							"    pm.expect(jsonData.destination).to.eql(\"Spain\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://canitravelto.wtf/travel",
+					"raw": "https://canitravelto.wtf/travel?origin=France&destination=Spain",
 					"protocol": "https",
 					"host": [
 						"canitravelto",
@@ -61,6 +129,16 @@
 					],
 					"path": [
 						"travel"
+					],
+					"query": [
+						{
+							"key": "origin",
+							"value": "France"
+						},
+						{
+							"key": "destination",
+							"value": "Spain"
+						}
 					]
 				}
 			},
@@ -68,6 +146,20 @@
 		},
 		{
 			"name": "Basic Com Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2a4cc88f-b096-4f82-a87e-9118db20b3f6",
+						"exec": [
+							"pm.test(\"Web is up - Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -94,6 +186,20 @@
 		},
 		{
 			"name": "Options Travel WTF Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cb948c2e-5c52-43bf-a80b-e596c84675c1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "OPTIONS",
 				"header": [],
