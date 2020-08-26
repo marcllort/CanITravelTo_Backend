@@ -58,9 +58,11 @@ When working on local, you should connect to *localhost:8080/travel*. If testing
 
 Using the following commands, go generates [Go modules](https://blog.friendsofgo.tech/posts/go-modules-en-tres-pasos/), which facilitates the download of the different packages/dependencies of the project.
 ```sh
-go mod init     //Creates the file where dependencies are saved
-go mod tidy     //Tidies and downloads the dependencies
+go mod init     // Creates the file where dependencies are saved
+go mod tidy     // Tidies and downloads the dependencies
 ```
+
+##### Usage
 
 The request to the backend should always be a *POST*, and this could be an example JSON body for the request:
 ```json
@@ -78,6 +80,25 @@ When running the *Gin router* previously I used `run`, which serves HTTP. But si
 So far, the response time in local is about 1ms, while in AWS is around 36ms. In both cases has been stress tested with thousands of requests every 1ms, and has been able to not drop a single request.
 
 To stress test the backend, I used the chrome extension named [RestfulStress](https://chrome.google.com/webstore/detail/restful-stress/lljgneahfmgjmpglpbhmkangancgdgeb).
+
+##### CORS
+
+Cross-Origin Resource Sharing (CORS) is a mechanism that uses additional HTTP headers to tell browsers to give a web application running at one origin, access to selected resources from a different origin. A web application executes a cross-origin HTTP request when it requests a resource that has a different origin (domain, protocol, or port) from its own.
+
+In the backend, when responding to the requests there is the following headers that have to be added to the response, so it complies with the CORS policy:
+```golang
+    c.Header("Access-Control-Allow-Origin", "*")  
+	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
+```
+
+"Preflighted" requests first send an HTTP request by the OPTIONS method to the resource on the other domain, to determine if the actual request is safe to send. Cross-site requests are preflighted like this since they may have implications to user data (my case, as frontend and backend are hosted separately).
+In case the request is a CORS preflight (OPTIONS request), we will also, in case that we use an API key, add the following header ("X-Auth-Token"), so the client knows that the requests must contain an API key/token:
+```golang
+    c.Header("Access-Control-Allow-Origin", "*")  	
+	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers, X-Auth-Token")
+```
+
+The "Access-Control-Allow-Origin", determines what origin/website can use the endpoint. I could configure it, so the backend can only be used by canitravelto.com and my own IP. In that case, I should also include an [extra header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin): "Vary: Origin".
 
 ### Data Retriever
 Coded in Go. Responsible for updating the Covid daily data, in the future will handle other Database related functions.
@@ -196,12 +217,8 @@ In the case of Github Pages (canitravelto.com) just follow the Cloudfare set-up.
 
 Another change to be done, is CORS in the API requests. CORS stands for Cross-origin resource sharing, which means that it will consume resources from another site. If not correctly configured, the requests will fail.
 
-To make this work, in the frontend we only need to add to the header of the request this three lines:
+To make this work, in the frontend we only need to add to the header of the request this api key:
 
- `myHeaders.append("Access-Control-Allow-Origin", "*");`
-    
- `myHeaders.append("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers");`
- 
  `myHeaders.append("X-Auth-Token", "SUPER_SECRET_API_KEY")`
 
 

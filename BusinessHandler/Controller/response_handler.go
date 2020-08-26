@@ -53,8 +53,10 @@ func HandleResponse(c *gin.Context, destination string, origin string) {
 		}
 	}
 
-	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Origin", "*") // If instead of *, we put the link of the website, only requests from that web will work.
+	// We should include an extra header: "Vary: Origin", doc: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
 	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
+
 	c.JSON(code, gin.H{
 		"destination": destination,
 		"origin":      origin,

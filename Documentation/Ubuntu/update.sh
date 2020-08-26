@@ -22,6 +22,6 @@ echo -e "\033[1;36m [Compose]\e[0m Docker-Compose up! Starting..."
 BUSINESS_VERSION="$(git rev-parse --short HEAD)" DATA_VERSION="$(git rev-parse --short HEAD)" DB_PASSWORD="$1" docker-compose up -d  > /dev/null 2>&1
 echo -e "\033[1;32m [CanITravelTo]\e[0m CanITravelTo up and running!"
 
-cd
+cd ~/CanITravelTo_Backend
 
 BUSINESS_VERSION="$(git rev-parse --short HEAD)" DATA_VERSION="$(git rev-parse --short HEAD)" DB_PASSWORD="marcpassword" docker-compose up -d
