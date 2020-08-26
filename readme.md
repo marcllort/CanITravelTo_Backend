@@ -163,7 +163,8 @@ Important using the `-oStrictHostKeyChecking=no` when SSHing from a script/pipel
 ```sh
 gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output key-aws.pem BusinessHandler/Creds/key-aws.pem.gpg
 chmod 600 key-aws.pem
-ssh -oStrictHostKeyChecking=no -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com './update.sh && exit'
+ssh -oStrictHostKeyChecking=no -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com "chmod +x CanITravelTo_Backend/Documentation/Ubuntu/update.sh && exit"
+ssh -oStrictHostKeyChecking=no -i key-aws.pem ubuntu@ec2-35-180-85-2.eu-west-3.compute.amazonaws.com "CanITravelTo_Backend/Documentation/Ubuntu/update.sh $DB_PASSWORD && exit"
 ```
 
 

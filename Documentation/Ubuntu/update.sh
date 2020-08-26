@@ -1,6 +1,6 @@
 # Receives DB password as a param
 
-cd CanITravelTo_Backend
+cd ~/CanITravelTo_Backend
 echo -e "\033[1;93m [Git]\e[0m Pulling Changes..."
 git pull > /dev/null 2>&1
 
