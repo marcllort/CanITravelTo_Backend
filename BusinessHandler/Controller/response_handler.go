@@ -54,7 +54,7 @@ func HandleResponse(c *gin.Context, destination string, origin string) {
 	}
 
 	c.Header("Access-Control-Allow-Origin", "*")
-	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers, X-Auth-Token")
+	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
 	c.JSON(code, gin.H{
 		"destination": destination,
 		"origin":      origin,
