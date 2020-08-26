@@ -21,13 +21,13 @@ Once the import script is prepared, just connect to the DB with DataGrip/Workben
 
 The DB credentials should be stored always in the Creds folder in the Backend project, with the following format:
 ```json
-    {
-      "user": "admin",
-      "password": "password set in AWS",
-      "hostname": "x.x.eu-west-3.rds.amazonaws.com (endpoint field in AWS)",
-      "port": "3306",
-      "database": "db name"
-    }
+{
+  "user": "admin",
+  "password": "password set in AWS",
+  "hostname": "x.x.eu-west-3.rds.amazonaws.com (endpoint field in AWS)",
+  "port": "3306",
+  "database": "db name"
+}
 ```
 
 ## EC2 Ubuntu 
@@ -66,10 +66,10 @@ go mod tidy     // Tidies and downloads the dependencies
 
 The request to the backend should always be a *POST*, and this could be an example JSON body for the request:
 ```json
-    {
-        "destination": "Spain",
-        "origin": "France",
-    }
+{
+    "destination": "Spain",
+    "origin": "France",
+}
 ```
 The same endpoint is also implemented with GET, but not being used at the moment. 
 The request must have a 'X-Auth-Token' with the API-KEY (for now the token is "SUPER_SECRET_API_KEY", original, I know xD) if not, a 401 Unauthorized code will be given.
@@ -88,14 +88,14 @@ Cross-Origin Resource Sharing (CORS) is a mechanism that uses additional HTTP he
 In the backend, when responding to the requests there is the following headers that have to be added to the response, so it complies with the CORS policy:
 ```golang
     c.Header("Access-Control-Allow-Origin", "*")  
-	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
+    c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
 ```
 
 "Preflighted" requests first send an HTTP request by the OPTIONS method to the resource on the other domain, to determine if the actual request is safe to send. Cross-site requests are preflighted like this since they may have implications to user data (my case, as frontend and backend are hosted separately).
 In case the request is a CORS preflight (OPTIONS request), we will also, in case that we use an API key, add the following header ("X-Auth-Token"), so the client knows that the requests must contain an API key/token:
 ```golang
     c.Header("Access-Control-Allow-Origin", "*")  	
-	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers, X-Auth-Token")
+    c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers, X-Auth-Token")
 ```
 
 The "Access-Control-Allow-Origin", determines what origin/website can use the endpoint. I could configure it, so the backend can only be used by canitravelto.com and my own IP. In that case, I should also include an [extra header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin): "Vary: Origin".
@@ -344,19 +344,19 @@ For this deployment I used [this](https://dev.to/yuribenjamin/how-to-deploy-reac
   - [ ] Add Covid info to response, and modify responses to be already displayed in frontend
   - [ ] Kubernetes support
   - [ ] Card view for backend response to frontend (show covid cases, visa status...)
-  - [ ] Create Postman test scenarios  
+  - [x] Create Postman test scenarios  
   - [x] Commentate code 
   - [ ] Retrieve accesses to the website (IP, origin, destination...) or find solution to log visits/web usage (gin may already have one)
   - [ ] Suggestions in Frontend (i.e You can also go there with your passport!) 
   - [ ] Unify country names between frontend, passportInfo and CovidInfo (maybe new row in Covid info with name of PassportInfo?)
   - [x] Add travis-ci or gitlab pipeline and update link of travis-ci build in readme.md
-  - [ ] Improve deployment to github pages 
+  - [x] Improve deployment to github pages 
   - [x] Ubuntu improve update.sh script
   - [ ] Remove countries.go list and just sanitise input to prevent sqlInjection
-  - [ ] Add tests to golang and react
-  - [ ] Develop good frontend
+  - [x] Add tests to golang and react
+  - [x] Develop good frontend
   - [ ] Protect ip for backend (cors, autotls?)
-  - [ ] Make Frontend use GET endpoint
+  - [x] Make Frontend use GET endpoint
   - [x] Archive old frontend repository
   - [ ] Save user emails from frontend form
   - [x] Write frontend README and update REACT part of this one (now use html,css)
