@@ -12,6 +12,7 @@ docker rm business-handler > /dev/null 2>&1
 docker rm data-retriever > /dev/null 2>&1
 docker rmi canitraveltobackend_business-handler > /dev/null 2>&1
 docker rmi canitraveltobackend_data-retriever > /dev/null 2>&1
+docker system prune -a -f > /dev/null 2>&1
 
 echo -e "\033[1;34m [Docker]\e[0m Pulling new images..."
 docker pull docker.pkg.github.com/marcllort/canitravelto_backend/data-retriever:"$(git rev-parse --short HEAD)"  > /dev/null 2>&1
