@@ -295,7 +295,6 @@ Go to the *package.json* file, and add: (or whatever domain name you want to use
 Also add in the begining of the scripts section:
 ```json
 "scripts": {
-    ...
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
 }
