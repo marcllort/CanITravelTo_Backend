@@ -31,7 +31,16 @@
 
 ## Motivation
 
-The main purpose of this web-service has been learning how to develop a full production-ready environment, using the latest technologies (Go, Docker, AWS, CI/CD, microservices...)
+The main purpose of this web-service has been learning how to develop a full production-ready environment, using the latest technologies (Go, Docker, AWS, CI/CD, microservices...), 
+it's not supposed to be a "usable" service, that's why the frontend may look a bit rough.
+The service has a simple static website frontend that consumes from the backend through an API (TLS ready, so the website can be https). 
+
+Its purpose is to let the user know if you can travel to a destination country from your country of origin. 
+The functionality is partially working, as it shows if with the passport of the user, he/she can travel there VISA free, a specific amount of days, VISA required... 
+
+It also shows the amount of Covid cases in the destination country, but the actual travel restrictions are not considered, as to get that information I would have to manually insert it and keep updated, or pay for a premium API. 
+
+Another option would be to scrap the website of each country to find the information automatically, but I'm not that crazy/have that much time (195 countries!).
 
 ## Screenshots
 
@@ -45,25 +54,24 @@ The main purpose of this web-service has been learning how to develop a full pro
 
 ## Database
 
-[Amazon RDS MySQL](https://aws.amazon.com/es/rds/mysql/) free instance (t.2 micro instance) --> Basic/Simple setup (hosted in Paris). 
+Running on [Amazon RDS MySQL](https://aws.amazon.com/es/rds/mysql/) free instance (t.2 micro instance) --> Basic/Simple setup (hosted in Paris). 
 
-Set its configuration to publicly available.
+Steps to configure:
 
-In Security groups, add 2 inbound rules (port 3306 mysql), one for your development computer with your own IP, and another for the EC2 instances where the backend server is being hosted. No need to set the IP, just the name of its security group/launch-wizard number.
+   * Set its configuration to publicly available.
 
-The current dataset in the DB has the information from [PassportIndex](passportindex.com) of the places you can travel with your passport. 
+   * In Security groups, add 2 inbound rules (port 3306 mysql), one for your development computer with your own IP, and another for the EC2 instances where the backend server is being hosted. No need to set the IP, just the name of its security group/launch-wizard number.
 
-This dataset, which should be regularly updated, can be found in [GitHub](https://github.com/ilyankou/passport-index-dataset) in CSV.Transform it to MySQL [here](https://www.convertcsv.com/csv-to-sql.htm).
+   * The current dataset in the DB has the information from [PassportIndex](passportindex.com) of the places you can travel with your passport. 
 
-If updated, and the list of countries has changed, it must also be changed in Countries.go list
+   * This dataset, which should be regularly updated, can be found in [GitHub](https://github.com/ilyankou/passport-index-dataset) in CSV. Transform it to MySQL [here](https://www.convertcsv.com/csv-to-sql.htm). If updated, and the list of countries has changed, it must also be changed in Countries.go list
 
-Once the import script is prepared, just connect to the DB with DataGrip/Workbench and run the script.
+   * Once the import script is prepared, just connect to the DB with DataGrip/Workbench and run the script.
 
-The DB credentials should be stored always in the Creds folder in the Backend project, with the following format:
+The DB credentials should be stored always in the Creds folder in the [Backend GoLang](#backend-golang), with the following format:
 ```json
 {
   "user": "admin",
-  "password": "password set in AWS",
   "hostname": "x.x.eu-west-3.rds.amazonaws.com (endpoint field in AWS)",
   "port": "3306",
   "database": "db name"
@@ -72,7 +80,7 @@ The DB credentials should be stored always in the Creds folder in the Backend pr
 
 ## EC2 Ubuntu 
 
-First I'll explain how to create the virtual-machine where the backend will run, and later in the *Backend GoLang* I will explain the backend itself.
+First I'll explain how to create the virtual-machine where the backend will run, and later in the [Backend GoLang](#backend-golang) I will explain the backend itself.
 
 Hosted in free-tier t2.micro [Amazon EC2 instance](https://aws.amazon.com/es/ec2/), running Ubuntu 18.04 default configuration (hosted in Paris).
 
@@ -140,7 +148,7 @@ In case the request is a CORS preflight (OPTIONS request), we will also, in case
     c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers, X-Auth-Token")
 ```
 
-The "Access-Control-Allow-Origin", determines what origin/website can use the endpoint. I could configure it, so the backend can only be used by canitravelto.com and my own IP. In that case, I should also include an [extra header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin): "Vary: Origin".
+The "Access-Control-Allow-Origin", determines what origin/website can use the endpoint. I could configure it, so the backend can only be used by `canitravelto.com` and my own IP. In that case, I should also include an [extra header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin): "Vary: Origin".
 
 ### Data Retriever
 Coded in Go. Responsible for updating the Covid daily data, in the future will handle other Database related functions.
@@ -203,7 +211,7 @@ pm.test("Origin/Destination Correct", function () {
 });
 ```
 
-In the CD pipeline, if the commit is in the master branch, and it's a commit marked as a release, it will decrypt the Credentials needed to build each microservice image (explained in the next [section](https://github.com/marcllort/CanITravelTo_Backend#ssh-from-pipeline)), 
+In the CD pipeline, if the commit is in the master branch, and it's a commit marked as a release, it will decrypt the Credentials needed to build each microservice image (explained in the next [section](#ssh-from-pipeline)), 
 build and upload the new Docker images (to Github's docker registry), and thenSSH into the EC2 instance to stop the old docker images and start the updated images with the latest changes.
 
 Another solution, could be building the docker images in the server instead of doing it directly in the pipeline. This would allow me to just have the Credentials in my server, and avoid uploading the encrypted version to Github.
@@ -273,7 +281,7 @@ In the GoLang backend (*main.go*):
 
 `router.RunTLS(PORT, "Creds/https-server.crt", "Creds/https-server.key")`
 
-We also need to enable CORS on the backend, to enable the requests from the frontend. Just add this two headers to the returned JSON:
+We also need to enable [CORS](#cors) on the backend, to enable the requests from the frontend. Just add this two headers to the returned JSON:
 
 `c.Header("Access-Control-Allow-Origin", "*")`
     
