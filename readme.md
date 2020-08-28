@@ -251,9 +251,9 @@ At first, only the frontend used Cloudfare as there was no need for the backend 
 
 The second option was to serve the API as HTTPS. I created my own certificates, but as they were self-signed, HTTPS didn't like them, so I had to have valid certificates. To get an SSL certificate, you need a domain name, so I then acquired canitravelto.wtf, to use it instead of the public AWS IP.
 
-[canitravelto.com](canitravelto.com) is hosted by godaddy.com
+[canitravelto.com](https://canitravelto.com) is hosted by godaddy.com
 
-[canitravelto.wtf](canitravelto.wtf) is hosted by name.com
+[canitravelto.wtf](https://canitravelto.wtf) is hosted by name.com
 
 ### Cloudfare
 To configure Cloudfare in both domains, there's a few steps to follow:
