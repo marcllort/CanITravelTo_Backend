@@ -4,6 +4,8 @@
 ![CD](https://github.com/marcllort/CanITravelTo_Backend/workflows/CD/badge.svg)
 
 - [CanITravelTo](#canitravelto)
+  * [Motivation](#motivation)
+  * [Screenshots](#screenshots)
   * [Database](#database)
   * [EC2 Ubuntu](#ec2-ubuntu)
   * [Backend GoLang](#backend-golang)
@@ -26,6 +28,20 @@
     + [Frontend React [Deprecated, now using vanilla HTML/CSS]](#frontend-react-deprecated-now-using-vanilla-htmlcss)
   * [Expiring Dates](#expiring-dates)
   * [TO-DO](#to-do)
+
+## Motivation
+
+The main purpose of this web-service has been learning how to develop a full production-ready environment, using the latest technologies (Go, Docker, AWS, CI/CD, microservices...)
+
+## Screenshots
+
+[Website (canitravelto.com)](https://canitravelto.com)
+
+![Example Web](https://github.com/marcllort/CanITravelTo_Backend/blob/master/Documentation/Assets/webExample.gif)
+
+[Postman Collection](https://github.com/marcllort/CanITravelTo_Backend/blob/master/Documentation/Postman) call example:
+
+![Example Postman](https://github.com/marcllort/CanITravelTo_Backend/blob/master/Documentation/Assets/postmanExample.gif)
 
 ## Database
 
@@ -86,7 +102,7 @@ go mod init     // Creates the file where dependencies are saved
 go mod tidy     // Tidies and downloads the dependencies
 ```
 
-##### Usage
+##### API Usage
 
 The request to the backend should always be a *POST*, and this could be an example JSON body for the request:
 ```json
@@ -95,9 +111,11 @@ The request to the backend should always be a *POST*, and this could be an examp
     "origin": "France",
 }
 ```
-The same endpoint is also implemented with GET, but not being used at the moment. 
-The request must have a 'X-Auth-Token' with the API-KEY (for now the token is "SUPER_SECRET_API_KEY", original, I know xD) if not, a 401 Unauthorized code will be given.
+
+The request **must have a 'X-Auth-Token' with the API-KEY** (for now the token is "SUPER_SECRET_API_KEY", original, I know xD) if not, a 401 Unauthorized code will be given.
 To enforce the api key, a middleware is being used, which is added to the "router" so every time it receives a request the auth check is done.
+
+The same endpoint is also implemented with GET, but not being used at the moment. 
 
 When running the *Gin router* previously I used `run`, which serves HTTP. But since being deployed I use `runTLS`, which serves HTTPS. In this case you need to provide two certificates, later explained in Domains and Cloudfare.
 
