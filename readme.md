@@ -24,23 +24,45 @@
       - [Frontend](#frontend-1)
       - [Backend](#backend)
 
+## Medium article
+https://medium.com/@mac12llm/canitravelto-21d19160bb42
+
 
 ## Motivation
 
-The main purpose of this web-service has been learning how to develop a full production-ready environment, using the latest technologies (Go, Docker, AWS, CI/CD, microservices...), 
-it's **not supposed to be a "usable" service**, that's why the frontend may look a bit rough.
-The service has a simple static website frontend that consumes from the backend through an API (TLS ready, so the website can be https). 
+Can I travel to is born from my interest in developing/learning how to develop a full production-ready environment, using the latest technologies (Go, Docker, AWS, CI/CD, microservices…).
+When deciding what I wanted to develop, I was also planning a trip with some friends to the Netherlands and Belgium, and that’s when I noticed that it was really confusing to know if you could travel there, due to the world situation… I don’t know if you heard about Covid-19 😂.
+So, as any good engineer would do, I decided to build a service that would tell the traveler what countries can they visit!
 
-Its purpose is to let the user **know if you can travel to a destination country from your country of origin**. 
-The functionality is partially working, as it shows if with the passport of the user, he/she can travel there VISA free, a specific amount of days, VISA required... 
+Its purpose is to let the user **know if they can travel to a destination country from a country of origin**. The functionality is partially working.
+Amongst the functionalities of the web service we can find: It shows if with the passport of the user, if they can travel there VISA free, only an specific amount of days or if the VISA is always required.
 
-It also shows the amount of Covid cases in the destination country, but the actual travel restrictions are not considered, as to get that information I would have to manually insert it and keep updated, or pay for a premium API. 
+It also displays the amount of Covid cases in the destination country, **but the actual travel restrictions are not considered**, as to get that information I would have to manually insert it and keep updated, or pay for a premium API. Another option would be to scrap the website of each country to find the information automatically, but I’m not that crazy/have that much time (195 countries!).
 
-Another option would be to scrap the website of each country to find the information automatically, but I'm not that crazy/have that much time (195 countries!).
-
-## Screenshots
+**It’s not supposed to be a “usable/user-friendly” service**, that’s why the frontend may look a bit rough. The service has a simple static website frontend that consumes from the backend through an API (TLS ready, so the website can be https).
 
 [Website (canitravelto.com)](https://canitravelto.com)
+
+Now that you have a brief idea of what the project it’s about, let’s see how I have coded each part of it!
+In the following sections, I will explain each part/technology used in the project and how everything has been set up.
+It is a bit more technical, so in case you are not interested in that, just a few bullet points about the project I’d like you to know!
+
+- Golang: Google’s backend programing language.
+
+- Gin Gonic: Golang HTTP framework to create the API.
+
+- Microservices: Project separated in different “mini programs”, so it is easier to maintain its distinct parts, and independently deployable.
+
+- AWS (EC2): Amazon’s cloud platform, where the backend is deployed.
+
+- CI/CD: Continuous Integration, means that each time a new version of the project is released, a collection of tests will run, to ensure this latest version works properly. Continuous Delivery, the process of, once we know the new version works, deploying this code to the cloud.
+
+- Docker: Unit of software that packages up code, so it can be run easily in any platform/OS.
+
+- Kanban: Agile methodology
+
+
+## Screenshots
 
 ![Example Web](https://github.com/marcllort/CanITravelTo_Backend/blob/master/Documentation/Assets/webExample.gif)
 
@@ -145,6 +167,8 @@ In case the request is a CORS preflight (OPTIONS request), we will also, in case
 ```
 
 The "Access-Control-Allow-Origin", determines what origin/website can use the endpoint. I could configure it, so the backend can only be used by `canitravelto.com` and my own IP. In that case, I should also include an [extra header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin): "Vary: Origin".
+
+To avoid all this, and not having to deal with certificates, HTTPS… another solution would be to use the service behind Nginx, which would act like a “middleware” between the user and the backend, and the deal with the SSL certificates and its renewals.
 
 ### Data Retriever
 Coded in Go. Responsible for **updating the Covid daily data**, in the future will also handle other Database related functions.
@@ -284,3 +308,6 @@ We also need to enable [CORS](#cors) on the backend, to **enable the requests fr
 `c.Header("Access-Control-Allow-Origin", "*")`
     
 `c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")`
+
+## Conclusion
+That’s it — all you need to create an API in Golang and deploy it free with a fully working environment. Hopefully, at least some of this will help you when building your next project. You can find all the source code here and if you have any suggestions or improvements feel free to create issue, pull request or just fork/star the repository. If you liked this article, look for the next one, where I’ll improve on the methodologies I used here, and make use of different languages and technologies.
