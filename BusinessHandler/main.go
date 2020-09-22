@@ -31,6 +31,10 @@ func main() {
 	router.GET("/travel", Controller.GetHandler)
 	router.GET("/test", Controller.GetHandlerTest)
 
-	router.RunTLS(PORT, creds+"/https-server.crt", creds+"/https-server.key")
+	err := router.RunTLS(PORT, creds+"/https-server.crt", creds+"/https-server.key")
+
+	if err != nil {
+		panic(err.Error())
+	}
 
 }

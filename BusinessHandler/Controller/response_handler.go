@@ -45,12 +45,20 @@ func HandleResponse(c *gin.Context, destination string, origin string) {
 
 	if country.Info != "VR" && code == 200 {
 		allowed = true
-		info += "You can travel to " + destination + "! There are " + fmt.Sprintf("%d", countryCovid.NewConfirmed) + " new daily COVID-19 cases. Your VISA allows you to be there for "
+		info += "You can travel to " + destination + "! There are " + fmt.Sprintf("%d", countryCovid.NewConfirmed) + " new daily COVID-19 cases. Your VISA  "
 		if country.Info == "VF" {
-			info += "an undefined amount of time!"
+			info += "allows you to be there for an undefined amount of time!"
+		} else if country.Info == "VOA" {
+			info += "will be required on arrival."
 		} else {
-			info += country.Info + " days without any special permit!"
+			info += country.Info + "allows you to be there for days without any special permit!"
 		}
+	} else {
+		info = "VISA Required to travel! "
+	}
+
+	if destination == "North Korea" {
+		info += "There are " + fmt.Sprintf("%d", countryCovid.NewConfirmed) + " new daily COVID-19 cases. But... even if Kim Jong Un let's you go... I wouldn't recommend it!"
 	}
 
 	c.Header("Access-Control-Allow-Origin", "*") // If instead of *, we put the link of the website, only requests from that web will work.

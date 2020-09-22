@@ -31,6 +31,10 @@ func CreateConnection(creds, dbpass string) *sql.DB {
 }
 
 func SelectCountryOriginDest(db *sql.DB, destination string, origin string) Model.InfoCountry {
+
+	destination = strings.ReplaceAll(destination, " ", "_")
+	origin = strings.ReplaceAll(origin, " ", "_")
+
 	var query strings.Builder
 	query.WriteString("SELECT ")
 	query.WriteString(destination)
