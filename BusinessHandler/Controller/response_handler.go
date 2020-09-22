@@ -61,6 +61,10 @@ func HandleResponse(c *gin.Context, destination string, origin string) {
 		info += "There are " + fmt.Sprintf("%d", countryCovid.NewConfirmed) + " new daily COVID-19 cases. But... even if Kim Jong Un let's you go... I wouldn't recommend it!"
 	}
 
+	if destination == origin {
+		info = "Yes, you can travel in your own country... There are " + fmt.Sprintf("%d", countryCovid.NewConfirmed) + " new daily COVID-19 cases."
+	}
+
 	c.Header("Access-Control-Allow-Origin", "*") // If instead of *, we put the link of the website, only requests from that web will work.
 	// We should include an extra header: "Vary: Origin", doc: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
 	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
