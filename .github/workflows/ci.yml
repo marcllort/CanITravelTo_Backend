@@ -3,10 +3,12 @@ name: CI
 
 # Only will run when there is a commit or a pull request in the master branch (to be changed)
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-test:
